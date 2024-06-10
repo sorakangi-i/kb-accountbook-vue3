@@ -1,0 +1,88 @@
+{
+  "member": [
+    {
+      "id": 1,
+      "name": "김재이",
+      "gender": "Woman",
+      "birth": "1998년 4월 17일",
+      "mobile": "010-2709-7767",
+      "email": "ksy980417@gmail.com"
+    }
+  ],
+  "saving": [
+    {
+      "fortune": "1,000,000원",
+      "allowance": "500,000원",
+      "categoryAllowance": "200,000원",
+      "category": "온라인쇼핑"
+    }
+  ],
+  "budget": [
+    {
+      "date": "2024년 6월 10일 (월)",
+      "type": "지출",
+      "category": "저축",
+      "amount": "10,000원",
+      "memo": "월간저축",
+      "period": true
+    },
+    {
+      "date": "2024-06-10",
+      "type": "income",
+      "category": "용돈",
+      "amount": 10000,
+      "memo": "부모님 용돈",
+      "period": true
+    },
+    {
+      "date": "2024년 6월 10일 (월)",
+      "type": "지출",
+      "category": "대출",
+      "amount": "3,000,000원",
+      "memo": "주거 비용",
+      "period": true
+    },
+    {
+      "date": "2024년 6월 3일 (월)",
+      "type": "지출",
+      "category": "통신",
+      "amount": "28,000원",
+      "memo": "통신비",
+      "period": true
+    }
+  ],
+  "periodic": [
+    {
+      "date": "2024년 6월 10일 (월)",
+      "type": "지출",
+      "category": "저축",
+      "amount": "10,000원",
+      "memo": "월간저축",
+      "duration": "한달"
+    },
+    {
+      "date": "2024-06-10",
+      "type": "income",
+      "category": "용돈",
+      "amount": 10000,
+      "memo": "매주 부모님 용돈",
+      "duration": "week"
+    },
+    {
+      "date": "2024년 6월 10일 (월)",
+      "type": "지출",
+      "category": "카페/간식",
+      "amount": "50,000원",
+      "memo": "나를 위한 사치",
+      "duration": "한달"
+    },
+    {
+      "date": "2024년 6월 3일 (월)",
+      "type": "지출",
+      "category": "통신",
+      "amount": "28,000원",
+      "memo": "핸드폰 통신비",
+      "duration": "한 달"
+    }
+  ]
+}
