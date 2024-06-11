@@ -7,6 +7,14 @@
       "birth": "1998년 4월 17일",
       "mobile": "010-2709-7767",
       "email": "ksy980417@gmail.com"
+    },
+    {
+      "id": 2,
+      "name": "심윤재",
+      "gender": "Man",
+      "birth": "1990년 12월 15일",
+      "mobile": "010-1234-5678",
+      "email": "jwoo90@gmail.com"
     }
   ],
   "saving": [
@@ -15,6 +23,12 @@
       "allowance": "500,000원",
       "categoryAllowance": "200,000원",
       "category": "온라인쇼핑"
+    },
+    {
+      "fortune": "2,500,000원",
+      "allowance": "700,000원",
+      "categoryAllowance": "300,000원",
+      "category": "패션/쇼핑"
     }
   ],
   "categories": {
@@ -49,7 +63,7 @@
       "date": "2024-06-10",
       "type": "income",
       "category": "용돈",
-      "amount": 10000,
+      "amount": "10000원",
       "memo": "부모님 용돈",
       "period": true
     },
@@ -57,7 +71,7 @@
       "date": "2024년 6월 10일 (월)",
       "type": "지출",
       "category": "대출",
-      "amount": "3,000,000원",
+      "amount": "3,000,00원",
       "memo": "주거 비용",
       "period": true
     },
@@ -68,6 +82,30 @@
       "amount": "28,000원",
       "memo": "통신비",
       "period": true
+    },
+    {
+      "date": "2024년 6월 5일 (수)",
+      "type": "지출",
+      "category": "식비",
+      "amount": "50,000원",
+      "memo": "저녁 식사",
+      "period": false
+    },
+    {
+      "date": "2024년 6월 7일 (금)",
+      "type": "income",
+      "category": "월급",
+      "amount": "250000원",
+      "memo": "월급 수령",
+      "period": false
+    },
+    {
+      "date": "2024년 6월 9일 (일)",
+      "type": "지출",
+      "category": "카페/간식",
+      "amount": "20,000원",
+      "memo": "커피 및 디저트",
+      "period": false
     }
   ],
   "periodic": [
@@ -83,7 +121,7 @@
       "date": "2024-06-10",
       "type": "income",
       "category": "용돈",
-      "amount": 10000,
+      "amount": "10000원",
       "memo": "매주 부모님 용돈",
       "duration": "week"
     },
@@ -102,6 +140,22 @@
       "amount": "28,000원",
       "memo": "핸드폰 통신비",
       "duration": "한 달"
+    },
+    {
+      "date": "2024년 6월 1일 (토)",
+      "type": "지출",
+      "category": "생활/마트",
+      "amount": "100,000원",
+      "memo": "월간 장보기",
+      "duration": "한달"
+    },
+    {
+      "date": "2024-06-15",
+      "type": "income",
+      "category": "환급",
+      "amount": "150000원",
+      "memo": "세금 환급",
+      "duration": "year"
     }
   ]
 }

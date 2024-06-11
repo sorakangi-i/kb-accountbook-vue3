@@ -1,26 +1,61 @@
 <template>
-  <div>
+  <div class="statistics">
     <h1>Statistics</h1>
-    <PieChart v-if="chartData" :chartData="chartData" />
-    <p v-else>Loading...</p>
-    <div v-if="data">
-      <h2>Member</h2>
-      <pre>{{ data.member }}</pre>
-      <h2>Saving</h2>
-      <pre>{{ data.saving }}</pre>
-      <h2>Categories</h2>
-      <pre>{{ data.categories }}</pre>
-      <h2>Budget</h2>
-      <pre>{{ data.budget }}</pre>
-      <h2>Periodic</h2>
-      <pre>{{ data.periodic }}</pre>
+    <div v-if="incomeChartData && expenseChartData">
+      <div class="chart-container">
+        <h2>Income</h2>
+        <PieChart :chartData="incomeChartData" />
+        <div class="details-container">
+          <h3>Income Details</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Percentage</th>
+                <th>Category</th>
+                <th>Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(value, key) in sortedIncomeDetails" :key="key">
+                <td>{{ value }}%</td>
+                <td>{{ key }}</td>
+                <td>{{ incomeData[key] }}원</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="chart-container">
+        <h2>Expenses</h2>
+        <PieChart :chartData="expenseChartData" />
+        <div class="details-container">
+          <h3>Expense Details</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Percentage</th>
+                <th>Category</th>
+                <th>Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(value, key) in sortedExpenseDetails" :key="key">
+                <td>{{ value }}%</td>
+                <td>{{ key }}</td>
+                <td>{{ expenseData[key] }}원</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
+    <p v-else>Loading...</p>
   </div>
 </template>
 
 <script>
 import axios from 'axios';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import PieChart from '../components/PieChart.vue';
 
 export default {
@@ -30,14 +65,33 @@ export default {
   },
   setup() {
     const data = ref(null);
-    const chartData = ref(null);
+    const incomeChartData = ref(null);
+    const expenseChartData = ref(null);
+    const incomeDetails = ref({});
+    const expenseDetails = ref({});
+    const incomeCategoriesCount = ref(0);
+    const expenseCategoriesCount = ref(0);
+    const incomeData = ref({});
+    const expenseData = ref({});
 
     const fetchData = async () => {
       try {
         const response = await axios.get('/db.json'); // 경로가 정확한지 확인
         data.value = response.data;
 
-        const expenseData = data.value.budget
+        incomeData.value = data.value.budget
+          .filter((item) => item.type === 'income')
+          .reduce((acc, curr) => {
+            const category = curr.category;
+            const amount = parseInt(curr.amount); // amount가 숫자형으로 가정
+            if (!acc[category]) {
+              acc[category] = 0;
+            }
+            acc[category] += amount;
+            return acc;
+          }, {});
+
+        expenseData.value = data.value.budget
           .filter((item) => item.type === '지출')
           .reduce((acc, curr) => {
             const category = curr.category;
@@ -51,8 +105,37 @@ export default {
             return acc;
           }, {});
 
-        chartData.value = {
-          labels: Object.keys(expenseData),
+        const totalIncome = Object.values(incomeData.value).reduce(
+          (a, b) => a + b,
+          0
+        );
+        const totalExpense = Object.values(expenseData.value).reduce(
+          (a, b) => a + b,
+          0
+        );
+
+        incomeChartData.value = {
+          labels: Object.keys(incomeData.value),
+          datasets: [
+            {
+              label: 'Income by Category',
+              backgroundColor: [
+                '#f87979',
+                '#a8d8ea',
+                '#ffe6eb',
+                '#d4a5a5',
+                '#a0c1b8',
+                '#d9bf77',
+                '#f7c5cc',
+                '#e1d89f',
+              ],
+              data: Object.values(incomeData.value),
+            },
+          ],
+        };
+
+        expenseChartData.value = {
+          labels: Object.keys(expenseData.value),
           datasets: [
             {
               label: 'Expenses by Category',
@@ -66,23 +149,106 @@ export default {
                 '#f7c5cc',
                 '#e1d89f',
               ],
-              data: Object.values(expenseData),
+              data: Object.values(expenseData.value),
             },
           ],
         };
+
+        incomeDetails.value = Object.entries(incomeData.value).reduce(
+          (acc, [key, value]) => {
+            acc[key] = ((value / totalIncome) * 100).toFixed(2);
+            return acc;
+          },
+          {}
+        );
+
+        expenseDetails.value = Object.entries(expenseData.value).reduce(
+          (acc, [key, value]) => {
+            acc[key] = ((value / totalExpense) * 100).toFixed(2);
+            return acc;
+          },
+          {}
+        );
+
+        incomeCategoriesCount.value = Object.keys(incomeData.value).length;
+        expenseCategoriesCount.value = Object.keys(expenseData.value).length;
       } catch (error) {
         console.error('Error fetching data:', error.message); // 오류 메시지 출력
-        console.error(error.response ? error.response.data : 'No response from server'); // 서버 응답 출력
+        console.error(
+          error.response ? error.response.data : 'No response from server'
+        ); // 서버 응답 출력
       }
     };
 
+    const sortedIncomeDetails = computed(() => {
+      return Object.fromEntries(
+        Object.entries(incomeDetails.value).sort(([, a], [, b]) => b - a)
+      );
+    });
+
+    const sortedExpenseDetails = computed(() => {
+      return Object.fromEntries(
+        Object.entries(expenseDetails.value).sort(([, a], [, b]) => b - a)
+      );
+    });
+
     onMounted(fetchData);
 
-    return { data, chartData };
+    return {
+      data,
+      incomeChartData,
+      expenseChartData,
+      sortedIncomeDetails,
+      sortedExpenseDetails,
+      incomeCategoriesCount,
+      expenseCategoriesCount,
+      incomeData,
+      expenseData,
+    };
   },
 };
 </script>
 
 <style scoped>
-/* 스타일 정의 */
+.statistics {
+  padding: 20px;
+}
+
+.chart-container {
+  margin-bottom: 40px;
+}
+
+.details-container {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.details-container table {
+  margin: 0 auto;
+  border-collapse: collapse;
+  width: 80%;
+}
+
+.details-container th,
+.details-container td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.details-container th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+.details-container td {
+  text-align: center;
+}
+
+.details-container tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.details-container tr:hover {
+  background-color: #ddd;
+}
 </style>

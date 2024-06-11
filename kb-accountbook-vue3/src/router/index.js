@@ -5,26 +5,10 @@ import Statistic from '../pages/Stastistic.vue';
 import Profile from '@/pages/Profile.vue';
 
 const routes = [
-  {
-    path: '/',
-    name: 'Home',
-    component: Home,
-  },
-  {
-    path: '/account',
-    name: 'Account',
-    component: Account,
-  },
-  {
-    path: '/profile',
-    name: 'Profile',
-    component: Profile,
-  },
-  {
-    path: '/statistic',
-    name: 'Statistic',
-    component: Statistic,
-  },
+  { path: '/', name: 'Home', component: Home },
+  { path: '/statistic', name: 'Statistic', component: Statistic },
+  { path: '/profile', name: 'Profile', component: Profile },
+  { path: '/account', name: 'Account', component: Account },
 ];
 
 const router = createRouter({
