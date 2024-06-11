@@ -9,6 +9,11 @@ const routes = [
     component: Home,
   },
   {
+    path: '/account',
+    name: 'Account',
+    component: Table,
+  },
+  {
     path: '/',
     name: 'Profile',
     component: Profile,
