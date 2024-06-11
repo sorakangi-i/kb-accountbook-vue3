@@ -17,4 +17,4 @@ export default {
 
 <style>
 /* 스타일 정의 */
-</style>
+
