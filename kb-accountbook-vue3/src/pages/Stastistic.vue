@@ -1,61 +1,64 @@
 <template>
-  <div class="statistics">
-    <h1>통계</h1>
+  <div>
+    <h1>Statistics</h1>
     <div>
       <button @click="toggleView('income')">Show Income</button>
       <button @click="toggleView('expense')">Show Expense</button>
     </div>
-    <div v-if="incomeChartData && showIncome">
-      <div class="chart-container">
-        <h2>Income</h2>
-        <PieChart :chartData="incomeChartData" />
-        <div class="details-container">
-          <h3>Income Details</h3>
-          <table>
-            <thead>
-              <tr>
-                <th>Percentage</th>
-                <th>Category</th>
-                <th>Amount</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(value, key) in sortedIncomeDetails" :key="key">
-                <td>{{ value }}%</td>
-                <td>{{ key }}</td>
-                <td>{{ incomeData[key] }}원</td>
-              </tr>
-            </tbody>
-          </table>
+    <div v-if="showIncome">
+      <h2 class="details-container">Income</h2>
+      <PieChart :chartData="incomeChartData" />
+      <div class="details-container">
+        <h3>Income Details</h3>
+        <div class="details-table">
+          <div
+            class="table-row"
+            v-for="(value, key, index) in sortedIncomeDetails"
+            :key="key"
+          >
+            <div
+              class="table-cell percentage"
+              :style="{ backgroundColor: incomeColors[index] }"
+            >
+              {{ value.percentage }}%
+            </div>
+            <div class="table-cell category">{{ key }}</div>
+            <div class="table-cell amount income">
+              {{ formatAmount(value.amount) }}원
+            </div>
+          </div>
         </div>
       </div>
     </div>
-    <div v-if="expenseChartData && showExpense">
-      <div class="chart-container">
-        <h2>Expenses</h2>
-        <PieChart :chartData="expenseChartData" />
-        <div class="details-container">
-          <h3>Expense Details</h3>
-          <table>
-            <thead>
-              <tr>
-                <th>Percentage</th>
-                <th>Category</th>
-                <th>Amount</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(value, key) in sortedExpenseDetails" :key="key">
-                <td>{{ value }}%</td>
-                <td>{{ key }}</td>
-                <td>{{ expenseData[key] }}원</td>
-              </tr>
-            </tbody>
-          </table>
+    <div v-if="showExpense">
+      <h2 class="details-container">Expenses</h2>
+      <PieChart :chartData="expenseChartData" />
+      <div class="details-container">
+        <h3>Expense Details</h3>
+        <div class="details-table">
+          <div
+            class="table-row"
+            v-for="(value, key, index) in sortedExpenseDetails"
+            :key="key"
+          >
+            <div
+              class="table-cell percentage"
+              :style="{ backgroundColor: expenseColors[index] }"
+            >
+              {{ value.percentage }}%
+            </div>
+            <div class="table-cell category">{{ key }}</div>
+            <div class="table-cell amount expense">
+              {{ formatAmount(value.amount) }}원
+            </div>
+          </div>
         </div>
       </div>
     </div>
     <p v-if="!incomeChartData && !expenseChartData">Loading...</p>
+    <div class="footer">
+      <p>© 2024 My Financial Dashboard</p>
+    </div>
   </div>
 </template>
 
@@ -79,15 +82,17 @@ export default {
     const expenseCategoriesCount = ref(0);
     const incomeData = ref({});
     const expenseData = ref({});
+    const incomeColors = ref([]);
+    const expenseColors = ref([]);
     const showIncome = ref(false);
-    const showExpense = ref(true); // 초기 상태를 true로 설정하여 Expenses를 디폴트로 표시
+    const showExpense = ref(true);
 
     const fetchData = async () => {
       try {
         const response = await axios.get('/db.json'); // 경로가 정확한지 확인
         data.value = response.data;
 
-        incomeData.value = data.value.budget
+        const income = data.value.budget
           .filter((item) => item.type === 'income')
           .reduce((acc, curr) => {
             const category = curr.category;
@@ -99,7 +104,7 @@ export default {
             return acc;
           }, {});
 
-        expenseData.value = data.value.budget
+        const expense = data.value.budget
           .filter((item) => item.type === '지출')
           .reduce((acc, curr) => {
             const category = curr.category;
@@ -113,17 +118,14 @@ export default {
             return acc;
           }, {});
 
-        const totalIncome = Object.values(incomeData.value).reduce(
-          (a, b) => a + b,
-          0
-        );
-        const totalExpense = Object.values(expenseData.value).reduce(
-          (a, b) => a + b,
-          0
-        );
+        const totalIncome = Object.values(income).reduce((a, b) => a + b, 0);
+        const totalExpense = Object.values(expense).reduce((a, b) => a + b, 0);
+
+        incomeData.value = income;
+        expenseData.value = expense;
 
         incomeChartData.value = {
-          labels: Object.keys(incomeData.value),
+          labels: Object.keys(income),
           datasets: [
             {
               label: 'Income by Category',
@@ -137,13 +139,13 @@ export default {
                 '#f7c5cc',
                 '#e1d89f',
               ],
-              data: Object.values(incomeData.value),
+              data: Object.values(income),
             },
           ],
         };
 
         expenseChartData.value = {
-          labels: Object.keys(expenseData.value),
+          labels: Object.keys(expense),
           datasets: [
             {
               label: 'Expenses by Category',
@@ -157,29 +159,39 @@ export default {
                 '#f7c5cc',
                 '#e1d89f',
               ],
-              data: Object.values(expenseData.value),
+              data: Object.values(expense),
             },
           ],
         };
 
-        incomeDetails.value = Object.entries(incomeData.value).reduce(
+        incomeDetails.value = Object.entries(income).reduce(
           (acc, [key, value]) => {
-            acc[key] = ((value / totalIncome) * 100).toFixed(2);
+            acc[key] = {
+              percentage: ((value / totalIncome) * 100).toFixed(2),
+              amount: value,
+            };
             return acc;
           },
           {}
         );
 
-        expenseDetails.value = Object.entries(expenseData.value).reduce(
+        expenseDetails.value = Object.entries(expense).reduce(
           (acc, [key, value]) => {
-            acc[key] = ((value / totalExpense) * 100).toFixed(2);
+            acc[key] = {
+              percentage: ((value / totalExpense) * 100).toFixed(2),
+              amount: value,
+            };
             return acc;
           },
           {}
         );
 
-        incomeCategoriesCount.value = Object.keys(incomeData.value).length;
-        expenseCategoriesCount.value = Object.keys(expenseData.value).length;
+        incomeColors.value = incomeChartData.value.datasets[0].backgroundColor;
+        expenseColors.value =
+          expenseChartData.value.datasets[0].backgroundColor;
+
+        incomeCategoriesCount.value = Object.keys(income).length;
+        expenseCategoriesCount.value = Object.keys(expense).length;
       } catch (error) {
         console.error('Error fetching data:', error.message); // 오류 메시지 출력
         console.error(
@@ -198,15 +210,23 @@ export default {
       }
     };
 
+    const formatAmount = (amount) => {
+      return amount.toLocaleString();
+    };
+
     const sortedIncomeDetails = computed(() => {
       return Object.fromEntries(
-        Object.entries(incomeDetails.value).sort(([, a], [, b]) => b - a)
+        Object.entries(incomeDetails.value).sort(
+          ([, a], [, b]) => b.percentage - a.percentage
+        )
       );
     });
 
     const sortedExpenseDetails = computed(() => {
       return Object.fromEntries(
-        Object.entries(expenseDetails.value).sort(([, a], [, b]) => b - a)
+        Object.entries(expenseDetails.value).sort(
+          ([, a], [, b]) => b.percentage - a.percentage
+        )
       );
     });
 
@@ -222,6 +242,9 @@ export default {
       expenseCategoriesCount,
       incomeData,
       expenseData,
+      incomeColors,
+      expenseColors,
+      formatAmount,
       showIncome,
       showExpense,
       toggleView,
@@ -231,46 +254,64 @@ export default {
 </script>
 
 <style scoped>
-.statistics {
-  padding: 20px;
-}
-
-.chart-container {
-  margin-bottom: 40px;
+canvas {
+  width: 100%;
+  height: 400px;
 }
 
 .details-container {
-  margin-top: 20px;
-  text-align: center;
+  margin-top: 40px; /* 간격 조정 */
+  text-align: center; /* 중앙 정렬 */
 }
 
-.details-container table {
+.details-table {
   margin: 0 auto;
-  border-collapse: collapse;
   width: 80%;
+  max-width: 600px;
+  border-collapse: collapse;
 }
 
-.details-container th,
-.details-container td {
-  border: 1px solid #ddd;
-  padding: 8px;
+.table-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #ddd;
 }
 
-.details-container th {
-  background-color: #f2f2f2;
-  font-weight: bold;
-}
-
-.details-container td {
+.table-cell {
+  flex: 1;
   text-align: center;
 }
 
-.details-container tr:nth-child(even) {
-  background-color: #f9f9f9;
+.percentage {
+  font-weight: bold;
+  color: #fff;
+  padding: 5px;
+  border-radius: 8px;
 }
 
-.details-container tr:hover {
-  background-color: #ddd;
+.amount.income {
+  color: #4caf50; /* 초록색 */
+}
+
+.amount.expense {
+  color: #ff5722; /* 빨간색 */
+}
+
+.footer {
+  margin-top: 40px;
+  text-align: center;
+}
+
+.footer p {
+  margin: 0;
+  padding: 10px;
+  background-color: #35495e;
+  color: white;
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+  left: 0;
 }
 
 button {
