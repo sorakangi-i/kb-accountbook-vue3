@@ -1,11 +1,11 @@
 <template>
   <div>
-    <h1>Statistics</h1>
+    <h1>통계</h1>
     <div>
       <button @click="toggleView('income')">Show Income</button>
       <button @click="toggleView('expense')">Show Expense</button>
     </div>
-    <div v-if="showIncome">
+    <div v-if="showIncome && incomeChartData">
       <h2 class="details-container">Income</h2>
       <PieChart :chartData="incomeChartData" />
       <div class="details-container">
@@ -13,12 +13,12 @@
         <div class="details-table">
           <div
             class="table-row"
-            v-for="(value, key, index) in sortedIncomeDetails"
+            v-for="(value, key) in sortedIncomeDetails"
             :key="key"
           >
             <div
               class="table-cell percentage"
-              :style="{ backgroundColor: incomeColors[index] }"
+              :style="{ backgroundColor: colorMapping[key] }"
             >
               {{ value.percentage }}%
             </div>
@@ -30,7 +30,7 @@
         </div>
       </div>
     </div>
-    <div v-if="showExpense">
+    <div v-if="showExpense && expenseChartData">
       <h2 class="details-container">Expenses</h2>
       <PieChart :chartData="expenseChartData" />
       <div class="details-container">
@@ -38,12 +38,12 @@
         <div class="details-table">
           <div
             class="table-row"
-            v-for="(value, key, index) in sortedExpenseDetails"
+            v-for="(value, key) in sortedExpenseDetails"
             :key="key"
           >
             <div
               class="table-cell percentage"
-              :style="{ backgroundColor: expenseColors[index] }"
+              :style="{ backgroundColor: colorMapping[key] }"
             >
               {{ value.percentage }}%
             </div>
@@ -55,7 +55,7 @@
         </div>
       </div>
     </div>
-    <p v-if="!incomeChartData && !expenseChartData">Loading...</p>
+    <p v-if="loading">Loading...</p>
     <div class="footer">
       <p>© 2024 My Financial Dashboard</p>
     </div>
@@ -78,14 +78,29 @@ export default {
     const expenseChartData = ref(null);
     const incomeDetails = ref({});
     const expenseDetails = ref({});
-    const incomeCategoriesCount = ref(0);
-    const expenseCategoriesCount = ref(0);
     const incomeData = ref({});
     const expenseData = ref({});
-    const incomeColors = ref([]);
-    const expenseColors = ref([]);
+    const colorMapping = {
+      월급: '#f87979',
+      용돈: '#a8d8ea',
+      온라인쇼핑: '#ffe6eb',
+      '패션/쇼핑': '#d4a5a5',
+      식비: '#a0c1b8',
+      '카페/간식': '#d9bf77',
+      주거: '#f7c5cc',
+      통신: '#e1d89f',
+      대출: '#f87979',
+      저축: '#a8d8ea',
+      '생활/마트': '#ffe6eb',
+      '교통/차량': '#d4a5a5',
+      '의료/건강': '#a0c1b8',
+      보험: '#d9bf77',
+      교육: '#f7c5cc',
+      기타: '#e1d89f',
+    };
     const showIncome = ref(false);
     const showExpense = ref(true);
+    const loading = ref(true);
 
     const fetchData = async () => {
       try {
@@ -129,16 +144,9 @@ export default {
           datasets: [
             {
               label: 'Income by Category',
-              backgroundColor: [
-                '#f87979',
-                '#a8d8ea',
-                '#ffe6eb',
-                '#d4a5a5',
-                '#a0c1b8',
-                '#d9bf77',
-                '#f7c5cc',
-                '#e1d89f',
-              ],
+              backgroundColor: Object.keys(income).map(
+                (key) => colorMapping[key]
+              ),
               data: Object.values(income),
             },
           ],
@@ -149,16 +157,9 @@ export default {
           datasets: [
             {
               label: 'Expenses by Category',
-              backgroundColor: [
-                '#f87979',
-                '#a8d8ea',
-                '#ffe6eb',
-                '#d4a5a5',
-                '#a0c1b8',
-                '#d9bf77',
-                '#f7c5cc',
-                '#e1d89f',
-              ],
+              backgroundColor: Object.keys(expense).map(
+                (key) => colorMapping[key]
+              ),
               data: Object.values(expense),
             },
           ],
@@ -186,17 +187,13 @@ export default {
           {}
         );
 
-        incomeColors.value = incomeChartData.value.datasets[0].backgroundColor;
-        expenseColors.value =
-          expenseChartData.value.datasets[0].backgroundColor;
-
-        incomeCategoriesCount.value = Object.keys(income).length;
-        expenseCategoriesCount.value = Object.keys(expense).length;
+        loading.value = false;
       } catch (error) {
         console.error('Error fetching data:', error.message); // 오류 메시지 출력
         console.error(
           error.response ? error.response.data : 'No response from server'
         ); // 서버 응답 출력
+        loading.value = false;
       }
     };
 
@@ -238,16 +235,14 @@ export default {
       expenseChartData,
       sortedIncomeDetails,
       sortedExpenseDetails,
-      incomeCategoriesCount,
-      expenseCategoriesCount,
       incomeData,
       expenseData,
-      incomeColors,
-      expenseColors,
+      colorMapping,
       formatAmount,
       showIncome,
       showExpense,
       toggleView,
+      loading,
     };
   },
 };
