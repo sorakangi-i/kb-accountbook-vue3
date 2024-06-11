@@ -30,7 +30,7 @@
       "date": "2024-06-10",
       "type": "income",
       "category": "용돈",
-      "amount": 10000,
+      "amount": "10,000원",
       "memo": "부모님 용돈",
       "period": true
     },
@@ -64,7 +64,7 @@
       "date": "2024-06-10",
       "type": "income",
       "category": "용돈",
-      "amount": 10000,
+      "amount": "10,000원",
       "memo": "매주 부모님 용돈",
       "duration": "week"
     },
