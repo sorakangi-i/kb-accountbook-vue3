@@ -1,7 +1,11 @@
 <template>
   <div class="statistics">
-    <h1>Statistics</h1>
-    <div v-if="incomeChartData && expenseChartData">
+    <h1>통계</h1>
+    <div>
+      <button @click="toggleView('income')">Show Income</button>
+      <button @click="toggleView('expense')">Show Expense</button>
+    </div>
+    <div v-if="incomeChartData && showIncome">
       <div class="chart-container">
         <h2>Income</h2>
         <PieChart :chartData="incomeChartData" />
@@ -25,6 +29,8 @@
           </table>
         </div>
       </div>
+    </div>
+    <div v-if="expenseChartData && showExpense">
       <div class="chart-container">
         <h2>Expenses</h2>
         <PieChart :chartData="expenseChartData" />
@@ -49,7 +55,7 @@
         </div>
       </div>
     </div>
-    <p v-else>Loading...</p>
+    <p v-if="!incomeChartData && !expenseChartData">Loading...</p>
   </div>
 </template>
 
@@ -73,6 +79,8 @@ export default {
     const expenseCategoriesCount = ref(0);
     const incomeData = ref({});
     const expenseData = ref({});
+    const showIncome = ref(false);
+    const showExpense = ref(true); // 초기 상태를 true로 설정하여 Expenses를 디폴트로 표시
 
     const fetchData = async () => {
       try {
@@ -180,6 +188,16 @@ export default {
       }
     };
 
+    const toggleView = (type) => {
+      if (type === 'income') {
+        showIncome.value = true;
+        showExpense.value = false;
+      } else if (type === 'expense') {
+        showIncome.value = false;
+        showExpense.value = true;
+      }
+    };
+
     const sortedIncomeDetails = computed(() => {
       return Object.fromEntries(
         Object.entries(incomeDetails.value).sort(([, a], [, b]) => b - a)
@@ -204,6 +222,9 @@ export default {
       expenseCategoriesCount,
       incomeData,
       expenseData,
+      showIncome,
+      showExpense,
+      toggleView,
     };
   },
 };
@@ -250,5 +271,18 @@ export default {
 
 .details-container tr:hover {
   background-color: #ddd;
+}
+
+button {
+  margin: 10px;
+  padding: 10px 20px;
+  border: none;
+  background-color: #35495e;
+  color: white;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #2c3e50;
 }
 </style>
