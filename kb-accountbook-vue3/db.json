@@ -1,7 +1,7 @@
 {
   "member": [
     {
-      "id": 1,
+      "id": "1",
       "name": "김재이",
       "gender": "Woman",
       "birth": "1998년 4월 17일",
@@ -14,75 +14,152 @@
       "fortune": "1,000,000원",
       "allowance": "500,000원",
       "categoryAllowance": "200,000원",
-      "category": "온라인쇼핑"
+      "category": "온라인쇼핑",
+      "id": "c9d8"
+    }
+  ],
+  "incomeCategories": [
+    {
+      "id": "1",
+      "name": "월급"
+    },
+    {
+      "id": "2",
+      "name": "용돈"
+    },
+    {
+      "id": "3",
+      "name": "환급"
+    },
+    {
+      "id": "4",
+      "name": "기타"
+    }
+  ],
+  "expenseCategories": [
+    {
+      "id": "1",
+      "name": "온라인쇼핑"
+    },
+    {
+      "id": "2",
+      "name": "패션/쇼핑"
+    },
+    {
+      "id": "3",
+      "name": "식비"
+    },
+    {
+      "id": "4",
+      "name": "카페/간식"
+    },
+    {
+      "id": "5",
+      "name": "주거"
+    },
+    {
+      "id": "6",
+      "name": "통신"
+    },
+    {
+      "id": "7",
+      "name": "교통/차량"
+    },
+    {
+      "id": "8",
+      "name": "의료/건강"
+    },
+    {
+      "id": "9",
+      "name": "보험"
+    },
+    {
+      "id": "10",
+      "name": "대출"
+    },
+    {
+      "id": "11",
+      "name": "교육"
+    },
+    {
+      "id": "12",
+      "name": "저축"
+    },
+    {
+      "id": "13",
+      "name": "생활/마트"
+    },
+    {
+      "id": "14",
+      "name": "기타"
+    }
+  ],
+  "paymentMethods": [
+    {
+      "id": "1",
+      "name": "현금"
+    },
+    {
+      "id": "2",
+      "name": "신용카드"
+    },
+    {
+      "id": "3",
+      "name": "체크카드"
+    }
+  ],
+  "types": [
+    {
+      "id": "1",
+      "name": "지출"
+    },
+    {
+      "id": "2",
+      "name": "수입"
     }
   ],
   "budget": [
     {
-      "date": "2024년 6월 10일 (월)",
-      "type": "지출",
-      "category": "저축",
-      "amount": "10,000원",
-      "memo": "월간저축",
-      "period": true
-    },
-    {
+      "id": "test01",
       "date": "2024-06-10",
-      "type": "income",
+      "type": "지출",
       "category": "용돈",
       "amount": 10000,
       "memo": "부모님 용돈",
       "period": true
     },
     {
-      "date": "2024년 6월 10일 (월)",
+      "id": "a49a",
       "type": "지출",
-      "category": "대출",
-      "amount": "3,000,000원",
-      "memo": "주거 비용",
-      "period": true
+      "date": "2024-06-10",
+      "category": "온라인쇼핑",
+      "paymentMethod": "현금",
+      "amount": 5000,
+      "memo": "콩나물국밥",
+      "duration": null,
+      "period": false
     },
     {
-      "date": "2024년 6월 3일 (월)",
+      "id": "aa92",
       "type": "지출",
-      "category": "통신",
-      "amount": "28,000원",
-      "memo": "통신비",
-      "period": true
+      "date": "2024-06-12",
+      "category": "온라인쇼핑",
+      "paymentMethod": "현금",
+      "amount": 50000,
+      "memo": "옷",
+      "duration": null,
+      "period": false
     }
   ],
   "periodic": [
-    {
-      "date": "2024년 6월 10일 (월)",
-      "type": "지출",
-      "category": "저축",
-      "amount": "10,000원",
-      "memo": "월간저축",
-      "duration": "한달"
-    },
     {
       "date": "2024-06-10",
       "type": "income",
       "category": "용돈",
       "amount": 10000,
       "memo": "매주 부모님 용돈",
-      "duration": "week"
-    },
-    {
-      "date": "2024년 6월 10일 (월)",
-      "type": "지출",
-      "category": "카페/간식",
-      "amount": "50,000원",
-      "memo": "나를 위한 사치",
-      "duration": "한달"
-    },
-    {
-      "date": "2024년 6월 3일 (월)",
-      "type": "지출",
-      "category": "통신",
-      "amount": "28,000원",
-      "memo": "핸드폰 통신비",
-      "duration": "한 달"
+      "duration": "week",
+      "id": "109a"
     }
   ]
 }
