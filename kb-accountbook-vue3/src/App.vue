@@ -3,10 +3,16 @@
     <header>
       <h1>kb-account book -vue3</h1>
       <nav>
-        <router-link to="/">Home</router-link>
-        <router-link to="/statistic">Statistics</router-link>
-        <router-link to="/profile">Profile</router-link>
-        <router-link to="/account">Account</router-link>
+        <router-link to="/"><i class="fa-solid fa-house"></i> Home</router-link>
+        <router-link to="/statistic"
+          ><i class="fa-solid fa-chart-pie"></i> Statistics</router-link
+        >
+        <router-link to="/profile"
+          ><i class="fa-solid fa-user"></i> Profile</router-link
+        >
+        <router-link to="/account"
+          ><i class="fa-solid fa-receipt"></i> Account</router-link
+        >
       </nav>
     </header>
     <main>

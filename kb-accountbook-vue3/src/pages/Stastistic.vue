@@ -5,17 +5,23 @@
     <h1>Statistics</h1>
     <!-- 수입, 지출 토글 버튼 -->
     <div>
-      <button @click="toggleView('income')">Show Income</button>
-      <button @click="toggleView('expense')">Show Expense</button>
+      <button @click="toggleView('income')">
+        <i class="fa-solid fa-coins"></i> Show Income
+      </button>
+      <button @click="toggleView('expense')">
+        <i class="fa-solid fa-wallet"></i> Show Expense
+      </button>
     </div>
     <!-- 수입 섹션 -->
     <div v-if="showIncome">
-      <h2 class="details-container">Income</h2>
+      <h2 class="details-container">
+        <i class="fa-solid fa-coins"></i> Income
+      </h2>
       <!-- 수입 원형 차트 -->
       <PieChart v-if="incomeChartData" :chartData="incomeChartData" />
       <!-- 수입 세부 정보 -->
       <div class="details-container">
-        <h3>Income Details</h3>
+        <h3><i class="fa-solid fa-coins"></i> Income Details</h3>
         <!-- 수입 세부 정보 테이블 -->
         <div class="details-table">
           <div
@@ -39,7 +45,9 @@
     </div>
     <!-- 지출 섹션 -->
     <div v-if="showExpense">
-      <h2 class="details-container">Expenses</h2>
+      <h2 class="details-container">
+        <i class="fa-solid fa-wallet"></i> Expenses
+      </h2>
       <!-- 지출 원형 차트와 목표 달성율 표시 -->
       <div class="chart-and-target">
         <PieChart v-if="expenseChartData" :chartData="expenseChartData" />
@@ -60,7 +68,7 @@
       </div>
       <!-- 지출 세부 정보 -->
       <div class="details-container">
-        <h3>Expense Details</h3>
+        <h3><i class="fa-solid fa-wallet"></i> Expense Details</h3>
         <!-- 지출 세부 정보 테이블 -->
         <div class="details-table">
           <div
@@ -125,7 +133,27 @@ export default {
       savings,
       totalExpense,
     } = useStatistics();
-
+    // 카테고리와 아이콘 클래스를 매핑하는 객체
+    // const categoryIconMap = {
+    //   '월급': 'fa-solid fa-wallet',
+    //   '용돈': 'fa-solid fa-hand-holding-usd',
+    //   '환급': 'fa-solid fa-undo-alt',
+    //   '기타': 'fa-solid fa-ellipsis-h',
+    //   '온라인쇼핑': 'fa-solid fa-shopping-cart',
+    //   '패션/쇼핑': 'fa-solid fa-tshirt',
+    //   '식비': 'fa-solid fa-utensils',
+    //   '카페/간식': 'fa-solid fa-coffee',
+    //   '주거': 'fa-solid fa-home',
+    //   '통신': 'fa-solid fa-phone',
+    //   '교통/차량': 'fa-solid fa-car',
+    //   '의료/건강': 'fa-solid fa-heartbeat',
+    //   '보험': 'fa-solid fa-shield-alt',
+    //   '대출': 'fa-solid fa-hand-holding-usd',
+    //   '교육': 'fa-solid fa-book',
+    //   '저축': 'fa-solid fa-piggy-bank',
+    //   '생활/마트': 'fa-solid fa-shopping-basket',
+    //   '기타': 'fa-solid fa-ellipsis-h'
+    // };
     // 컴포넌트에 사용할 데이터와 기능 반환
     return {
       data,

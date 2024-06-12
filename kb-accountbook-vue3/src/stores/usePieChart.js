@@ -1,7 +1,7 @@
 import { ref, onMounted, watch } from 'vue';
 import { Chart, registerables } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-
+//플러그인 같은경우 조금더 공부가 필요해..
 // Chart.js에서 사용할 수 있는 차트 유형을 등록합니다.
 Chart.register(...registerables, ChartDataLabels);
 
@@ -9,7 +9,7 @@ Chart.register(...registerables, ChartDataLabels);
 export function usePieChart(props) {
   // 차트를 그릴 캔버스 요소에 대한 참조를 생성합니다.
   //ref를 사용하여 차트를 그릴 캔버스 요소에 대한 참조를 생성합니다.
-
+  //역시 거의 다 ref를 사용하는 구만   
   const canvas = ref(null);
   // 차트 인스턴스를 저장할 변수를 초기화합니다. 변수들을 초기화 하지 않으면 에러가 나드라
   let chartInstance = null;
@@ -57,7 +57,7 @@ export function usePieChart(props) {
           responsive: true, // 반응형 활성화
           maintainAspectRatio: false, // 가로 세로 비율 유지 비활성화
           plugins: {
-            // 툴팁 플러그인 옵션 설정
+            // 툴팁 플러그인 옵션 설정 플러그인 같은경우 조금더 공부가 필요해...
             tooltip: {
               callbacks: {
                 // 툴팁 라벨 콜백 함수
