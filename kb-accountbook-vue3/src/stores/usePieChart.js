@@ -15,7 +15,7 @@ export function usePieChart(props) {
   let chartInstance = null;
 
   // 차트를 렌더링하는 함수를 정의합니다.
-  //onMounted 훅을 사용하여 컴포넌트가 처음으로 마운트될 때 실행될 로직을 정의합니다. 
+  //onMounted 훅을 사용하여 컴포넌트가 처음으로 마운트될 때 실행될 로직을 정의합니다.
   //여기서는 props.chartData가 정의되었을 때 renderChart 함수를 호출하여 차트를 렌더링합니다.
   const renderChart = () => {
     // 이전에 생성된 차트 인스턴스가 있으면 파기합니다. 이것도 없으며 ㄴ오류
@@ -34,8 +34,8 @@ export function usePieChart(props) {
         }))
         .sort((a, b) => b.value - a.value);
 
-      // 정렬된 데이터에서 레이블, 값, 색상을 추출합니다. 
-      //아이템 안에는 acc 
+      // 정렬된 데이터에서 레이블, 값, 색상을 추출합니다.
+      //아이템 안에는 acc
       const sortedLabels = sortedData.map((item) => item.label);
       const sortedValues = sortedData.map((item) => item.value);
       const sortedColors = sortedData.map((item) => item.backgroundColor);
@@ -79,7 +79,7 @@ export function usePieChart(props) {
       });
     }
   };
-  //onMounted 훅을 사용하여 컴포넌트가 처음으로 마운트될 때 실행될 로직을 정의합니다. 
+  //onMounted 훅을 사용하여 컴포넌트가 처음으로 마운트될 때 실행될 로직을 정의합니다.
   //여기서는 props.chartData가 정의되었을 때 renderChart 함수를 호출하여 차트를 렌더링합니다.
 
   // 컴포넌트가 마운트된 후 실행될 로직을 정의합니다.
@@ -92,7 +92,7 @@ export function usePieChart(props) {
 
   // props.chartData가 변경될 때마다 호출되는 watcher를 정의합니다.
   //watch 함수를 사용하여 props.chartData의 변경을 감지합니다.
-  //props.chartData가 변경될 때마다 renderChart 함수를 호출하여 차트를 다시 렌더링합니다. 
+  //props.chartData가 변경될 때마다 renderChart 함수를 호출하여 차트를 다시 렌더링합니다.
   // watch는 어떤 특정 조건에서 함수를 실행시키기 위한 트리거로서 사용합니다.
   // deep: true 옵션을 사용하여 props.chartData의 속성까지 재귀적으로 감지하도록 설정합니다. 모르겠다...
   watch(
