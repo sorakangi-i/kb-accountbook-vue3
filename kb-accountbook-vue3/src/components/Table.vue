@@ -70,14 +70,18 @@ export default {
   },
   computed: {
     filteredBudget() {
-      return this.budget.filter(item => {
-        return (
-          (!this.filters.date || item.date === this.filters.date) &&
-          (!this.filters.type || item.type === this.filters.type) &&
-          (!this.filters.category || item.category === this.filters.category) &&
-          (!this.filters.paymentMethod || item.paymentMethod === this.filters.paymentMethod)
-        );
-      });
+      return this.budget
+        .filter(item => {
+          return (
+            (!this.filters.date || item.date === this.filters.date) &&
+            (!this.filters.type || item.type === this.filters.type) &&
+            (!this.filters.category || item.category === this.filters.category) &&
+            (!this.filters.paymentMethod || item.paymentMethod === this.filters.paymentMethod)
+          );
+        })
+        .sort((a, b) => {
+          return new Date(a.date) - new Date(b.date);
+        });
     }
   },
   created() {
@@ -116,12 +120,6 @@ export default {
 
 .filters {
   width: 80%; /* 표의 폭과 동일하도록 설정 */
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 20px;
-}
-
-.filters {
   display: flex;
   justify-content: space-between;
   margin-bottom: 20px;
