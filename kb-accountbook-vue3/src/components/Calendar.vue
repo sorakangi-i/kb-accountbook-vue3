@@ -79,9 +79,49 @@ const prevMonth = () => {
 const selectDate = (date) => {
   if (!date) return;
   const selectedDateString = date.toISOString().split('T')[0];
+
   const filteredTransactions = calendarStore.budgetData.filter(
-    (transaction) => transaction.date === selectedDateString
+    (transaction) => {
+      if (transaction.period) {
+        const startDate = new Date(transaction.date);
+        const dayDifference = Math.floor(
+          (date - startDate) / (1000 * 60 * 60 * 24)
+        );
+
+        switch (transaction.duration) {
+          case 'weekly':
+            if (date.getDay() === startDate.getDay()) return true;
+            break;
+          case 'monthly':
+            if (startDate.getDate() === date.getDate()) return true;
+            break;
+          case 'quarterly':
+            if (
+              startDate.getDate() === date.getDate() &&
+              Math.floor(dayDifference / 91) % 3 === 0
+            )
+              return true;
+            break;
+          case 'semiannually':
+            if (
+              startDate.getDate() === date.getDate() &&
+              Math.floor(dayDifference / 182) % 2 === 0
+            )
+              return true;
+            break;
+          case 'yearly':
+            if (
+              startDate.getDate() === date.getDate() &&
+              startDate.getMonth() === date.getMonth()
+            )
+              return true;
+            break;
+        }
+      }
+      return transaction.date === selectedDateString;
+    }
   );
+
   transactionStore.setSelectedDate(selectedDateString);
   transactionStore.setSelectedTransactions(filteredTransactions);
 };
