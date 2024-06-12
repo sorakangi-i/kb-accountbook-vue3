@@ -1,16 +1,15 @@
 <template>
   <div>
-    <h1>Home Page</h1>
-    <p>Welcome to the Home Page</p>
+    <QuickAddTransaction />
+    <Calendar />
   </div>
 </template>
 
-<script>
-export default {
-  name: 'Home',
-};
+<script setup>
+import QuickAddTransaction from '@/components/QuickAddTransaction.vue';
+import Calendar from '@/components/Calendar.vue';
 </script>
 
 <style scoped>
-/* 스타일 정의 */
+/* 스타일은 나중에 추가할 예정입니다 */
 </style>
