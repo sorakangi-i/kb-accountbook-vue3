@@ -1,15 +1,22 @@
 <template>
+  <!-- 통계 페이지 템플릿 -->
   <div>
+    <!-- 페이지 제목 -->
     <h1>Statistics</h1>
+    <!-- 수입, 지출 토글 버튼 -->
     <div>
       <button @click="toggleView('income')">Show Income</button>
       <button @click="toggleView('expense')">Show Expense</button>
     </div>
+    <!-- 수입 섹션 -->
     <div v-if="showIncome">
       <h2 class="details-container">Income</h2>
+      <!-- 수입 원형 차트 -->
       <PieChart v-if="incomeChartData" :chartData="incomeChartData" />
+      <!-- 수입 세부 정보 -->
       <div class="details-container">
         <h3>Income Details</h3>
+        <!-- 수입 세부 정보 테이블 -->
         <div class="details-table">
           <div
             class="table-row"
@@ -30,8 +37,10 @@
         </div>
       </div>
     </div>
+    <!-- 지출 섹션 -->
     <div v-if="showExpense">
       <h2 class="details-container">Expenses</h2>
+      <!-- 지출 원형 차트와 목표 달성율 표시 -->
       <div class="chart-and-target">
         <PieChart v-if="expenseChartData" :chartData="expenseChartData" />
         <div
@@ -39,6 +48,7 @@
           :key="saving.id"
           class="target-achievement"
         >
+          <!-- 원형 프로그레스 바 -->
           <CircularProgressBar
             :percentage="
               parseFloat(calculateAchievement(saving.goal, totalExpense))
@@ -48,8 +58,10 @@
           />
         </div>
       </div>
+      <!-- 지출 세부 정보 -->
       <div class="details-container">
         <h3>Expense Details</h3>
+        <!-- 지출 세부 정보 테이블 -->
         <div class="details-table">
           <div
             class="table-row"
@@ -70,7 +82,9 @@
         </div>
       </div>
     </div>
+    <!-- 데이터 로딩 중일 때 표시되는 메시지 -->
     <p v-if="!incomeChartData && !expenseChartData">Loading...</p>
+    <!-- 페이지 하단에 표시되는 footer -->
     <div class="footer">
       <p>© 2024 My Financial Dashboard</p>
     </div>
@@ -78,8 +92,7 @@
 </template>
 
 <script>
-import axios from 'axios';
-import { ref, onMounted, computed } from 'vue';
+import { useStatistics } from '../stores/useStatistics';
 import PieChart from '../components/PieChart.vue';
 import CircularProgressBar from '../components/CircularProgressBar.vue';
 
@@ -90,236 +103,30 @@ export default {
     CircularProgressBar,
   },
   setup() {
-    const data = ref(null);
-    const incomeChartData = ref(null);
-    const expenseChartData = ref(null);
-    const incomeDetails = ref({});
-    const expenseDetails = ref({});
-    const incomeCategoriesCount = ref(0);
-    const expenseCategoriesCount = ref(0);
-    const incomeData = ref({});
-    const expenseData = ref({});
-    const incomeColors = ref([]);
-    const expenseColors = ref([]);
-    const showIncome = ref(false);
-    const showExpense = ref(true);
-    const savings = ref([]);
-    const totalExpense = ref(0);
+    // 통계 데이터 및 관련 기능을 가져오는 커스텀 훅 사용
+    const {
+      data,
+      incomeChartData,
+      expenseChartData,
+      sortedIncomeDetails,
+      sortedExpenseDetails,
+      incomeCategoriesCount,
+      expenseCategoriesCount,
+      incomeData,
+      expenseData,
+      sortedIncomeColors,
+      sortedExpenseColors,
+      formatAmount,
+      calculateAchievement,
+      calculateRisk,
+      showIncome,
+      showExpense,
+      toggleView,
+      savings,
+      totalExpense,
+    } = useStatistics();
 
-    const fetchData = async () => {
-      try {
-        const response = await axios.get('/db.json');
-        data.value = response.data;
-
-        const incomeCategoryMap = Object.fromEntries(
-          data.value.incomeCategories.map((cat) => [cat.id, cat.name])
-        );
-
-        const expenseCategoryMap = Object.fromEntries(
-          data.value.expenseCategories.map((cat) => [cat.id, cat.name])
-        );
-
-        const income = data.value.budget
-          .filter((item) => item.type === '수입')
-          .reduce((acc, curr) => {
-            const category = incomeCategoryMap[curr.category] || curr.category;
-            const amount = parseInt(curr.amount);
-            if (!acc[category]) {
-              acc[category] = 0;
-            }
-            acc[category] += amount;
-            return acc;
-          }, {});
-
-        const expense = data.value.budget
-          .filter((item) => item.type === '지출')
-          .reduce((acc, curr) => {
-            const category = expenseCategoryMap[curr.category] || curr.category;
-            const amount = parseInt(curr.amount);
-            if (!acc[category]) {
-              acc[category] = 0;
-            }
-            acc[category] += amount;
-            return acc;
-          }, {});
-
-        totalExpense.value = Object.values(expense).reduce((a, b) => a + b, 0);
-        const totalIncome = Object.values(income).reduce((a, b) => a + b, 0);
-
-        incomeData.value = income;
-        expenseData.value = expense;
-
-        const incomeColorsArray = [
-          '#4caf50', // 진한 녹색
-          '#8bc34a', // 라임색
-          '#cddc39', // 라임 라이트
-          '#ffeb3b', // 밝은 노란색
-          '#ffc107', // 호박색
-          '#ff9800', // 주황색
-          '#ff5722', // 진한 주황색
-          '#f44336', // 빨간색
-          '#e91e63', // 핫핑크
-          '#9c27b0', // 보라색
-          '#673ab7', // 인디고
-          '#3f51b5', // 인디고 라이트
-          '#2196f3', // 파란색
-          '#03a9f4', // 밝은 파란색
-          '#00bcd4', // 청록색
-          '#009688', // 에메랄드 그린
-          '#795548', // 브라운
-          '#607d8b', // 블루 그레이
-        ];
-
-        const expenseColorsArray = [
-          '#FFB3BA', // 밝은 파스텔 붉은색
-          '#FFDFBA', // 밝은 파스텔 주황색
-          '#FFB347', // 파스텔 오렌지색
-          '#FFD1DC', // 밝은 파스텔 핑크색
-          '#FF9AA2', // 중간 밝기 파스텔 붉은색
-          '#FFB7B2', // 파스텔 붉은색
-          '#FFDAC1', // 파스텔 오렌지색
-          '#FFC3A0', // 파스텔 살구색
-          '#FFB6C1', // 파스텔 연분홍색
-          '#FFC0CB', // 파스텔 핑크색
-          '#FFDAB9', // 파스텔 복숭아색
-          '#FFE4E1', // 파스텔 장미색
-          '#FFE4B5', // 파스텔 밀감색
-          '#FFA07A', // 파스텔 라이트 살몬색
-          '#FF7F50', // 파스텔 코랄색
-          '#FF6F61', // 파스텔 로즈색
-          '#FF4500', // 파스텔 오렌지레드색
-          '#FF6347', // 파스텔 토마토색
-        ];
-
-        const sortedIncomeEntries = Object.entries(income).sort(
-          ([, a], [, b]) => b - a
-        );
-
-        const sortedExpenseEntries = Object.entries(expense).sort(
-          ([, a], [, b]) => b - a
-        );
-
-        const sortedIncome = Object.fromEntries(sortedIncomeEntries);
-        const sortedExpense = Object.fromEntries(sortedExpenseEntries);
-
-        incomeDetails.value = Object.entries(sortedIncome).reduce(
-          (acc, [key, value]) => {
-            acc[key] = {
-              percentage: ((value / totalIncome) * 100).toFixed(2),
-              amount: value,
-            };
-            return acc;
-          },
-          {}
-        );
-
-        expenseDetails.value = Object.entries(sortedExpense).reduce(
-          (acc, [key, value]) => {
-            acc[key] = {
-              percentage: ((value / totalExpense.value) * 100).toFixed(2),
-              amount: value,
-            };
-            return acc;
-          },
-          {}
-        );
-
-        incomeColors.value = sortedIncomeEntries.map(
-          ([,], index) => incomeColorsArray[index % incomeColorsArray.length]
-        );
-
-        expenseColors.value = sortedExpenseEntries.map(
-          ([,], index) => expenseColorsArray[index % expenseColorsArray.length]
-        );
-
-        incomeChartData.value = {
-          labels: Object.keys(sortedIncome),
-          datasets: [
-            {
-              label: 'Income by Category',
-              backgroundColor: incomeColors.value,
-              data: Object.values(sortedIncome),
-            },
-          ],
-        };
-
-        expenseChartData.value = {
-          labels: Object.keys(sortedExpense),
-          datasets: [
-            {
-              label: 'Expenses by Category',
-              backgroundColor: expenseColors.value,
-              data: Object.values(sortedExpense),
-            },
-          ],
-        };
-
-        incomeCategoriesCount.value = Object.keys(sortedIncome).length;
-        expenseCategoriesCount.value = Object.keys(sortedExpense).length;
-
-        savings.value = data.value.saving.map((item) => ({
-          id: item.id,
-          goal: parseInt(
-            item.categoryAllowance.replace(/,/g, '').replace('원', '')
-          ),
-        }));
-      } catch (error) {
-        console.error('Error fetching data:', error.message);
-        console.error(
-          error.response ? error.response.data : 'No response from server'
-        );
-      }
-    };
-
-    const toggleView = (type) => {
-      if (type === 'income') {
-        showIncome.value = true;
-        showExpense.value = false;
-      } else if (type === 'expense') {
-        showIncome.value = false;
-        showExpense.value = true;
-      }
-    };
-
-    const formatAmount = (amount) => {
-      if (amount === undefined || amount === null) return '0';
-      return amount.toLocaleString();
-    };
-
-    const calculateAchievement = (goal, totalExpense) => {
-      if (goal === 0) return 0;
-      return Math.min((totalExpense / goal) * 100, 100).toFixed(2);
-    };
-
-    const calculateRisk = (goal, totalExpense) => {
-      const achievement = calculateAchievement(goal, totalExpense);
-      if (achievement >= 75) {
-        return 'High';
-      } else if (achievement >= 50) {
-        return 'Medium';
-      } else {
-        return 'Low';
-      }
-    };
-
-    const sortedIncomeDetails = computed(() => {
-      return incomeDetails.value;
-    });
-
-    const sortedExpenseDetails = computed(() => {
-      return expenseDetails.value;
-    });
-
-    const sortedIncomeColors = computed(() => {
-      return incomeColors.value;
-    });
-
-    const sortedExpenseColors = computed(() => {
-      return expenseColors.value;
-    });
-
-    onMounted(fetchData);
-
+    // 컴포넌트에 사용할 데이터와 기능 반환
     return {
       data,
       incomeChartData,
@@ -346,86 +153,101 @@ export default {
 </script>
 
 <style scoped>
+/* 스타일링이 scoped로 지정되어 해당 컴포넌트에만 적용됩니다. */
+
+/* 캔버스 스타일 */
 canvas {
   width: 100%;
   height: 400px;
 }
 
+/* 세부 정보 컨테이너 스타일 */
 .details-container {
-  margin-top: 40px; /* 간격 조정 */
-  text-align: center; /* 중앙 정렬 */
+  margin-top: 40px; /* 상단 여백 */
+  text-align: center; /* 가운데 정렬 */
 }
 
+/* 세부 정보 테이블 스타일 */
 .details-table {
-  margin: 0 auto;
+  margin: 0 auto; /* 중앙 정렬 */
   width: 80%;
-  max-width: 600px;
-  border-collapse: collapse;
+  max-width: 600px; /* 최대 너비 지정 */
+  border-collapse: collapse; /* 테이블 셀 경계를 합칩니다. */
 }
 
+/* 테이블 로우 스타일 */
 .table-row {
-  display: flex;
-  justify-content: space-between;
-  padding: 10px 0;
-  border-bottom: 1px solid #ddd;
+  display: flex; /* 플렉스 레이아웃 사용 */
+  justify-content: space-between; /* 로우 요소 간 간격 벌리기 */
+  padding: 10px 0; /* 로우 내부 패딩 설정 */
+  border-bottom: 1px solid #ddd; /* 로우 간 구분선 설정 */
 }
 
+/* 테이블 셀 스타일 */
 .table-cell {
-  flex: 1;
-  text-align: center;
+  flex: 1; /* 플렉스 요소를 동일한 너비로 설정 */
+  text-align: center; /* 가운데 정렬 */
 }
 
+/* 백분율 표시 셀 스타일 */
 .percentage {
-  font-weight: bold;
-  color: #fff;
-  padding: 5px;
-  border-radius: 8px;
+  font-weight: bold; /* 굵은 글꼴 */
+  color: #fff; /* 글꼴 색상 */
+  padding: 5px; /* 내부 패딩 설정 */
+  border-radius: 8px; /* 둥근 모서리 설정 */
 }
 
+/* 수입 금액 색상 */
 .amount.income {
   color: #4caf50; /* 초록색 */
 }
 
+/* 지출 금액 색상 */
 .amount.expense {
   color: #ff5722; /* 빨간색 */
 }
 
+/* 하단 footer 스타일 */
 .footer {
-  margin-top: 40px;
-  text-align: center;
+  margin-top: 40px; /* 상단 여백 설정 */
+  text-align: center; /* 가운데 정렬 */
 }
 
 .footer p {
-  margin: 0;
-  padding: 10px;
-  background-color: #35495e;
-  color: white;
-  position: fixed;
-  width: 100%;
-  bottom: 0;
-  left: 0;
+  margin: 0; /* 마진 제거 */
+  padding: 10px; /* 내부 패딩 설정 */
+  background-color: #35495e; /* 배경색 지정 */
+  color: white; /* 글꼴 색상 */
+  position: fixed; /* 고정 위치 설정 */
+  width: 100%; /* 전체 너비 설정 */
+  bottom: 0; /* 하단 위치로 지정 */
+  left: 0; /* 좌측 위치로 지정 */
 }
 
+/* 버튼 스타일 */
 button {
-  margin: 10px;
-  padding: 10px 20px;
-  border: none;
-  background-color: #35495e;
-  color: white;
-  cursor: pointer;
+  margin: 10px; /* 마진 설정 */
+  padding: 10px 20px; /* 패딩 설정 */
+  border: none; /* 테두리 제거 */
+  background-color: #35495e; /* 배경색 지정 */
+  color: white; /* 글꼴 색상 */
+  cursor: pointer; /* 커서 타입 설정 */
 }
 
+/* 버튼 호버 효과 스타일 */
 button:hover {
-  background-color: #2c3e50;
+  background-color: #2c3e50; /* 호버 시 배경색 변경 */
 }
 
+/* 차트와 목표 달성율 표시 컨테이너 스타일 */
 .chart-and-target {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: flex; /* 플렉스 레이아웃 사용 */
+  align-items: center; /* 아이템 세로 정렬 */
+  justify-content: center; /* 아이템 가로 정렬 */
 }
 
+/* 목표 달성율 표시 요소 스타일 */
 .target-achievement {
-  margin-left: 20px;
+  margin-left: 20px; /* 왼쪽 여백 설정 */
 }
 </style>

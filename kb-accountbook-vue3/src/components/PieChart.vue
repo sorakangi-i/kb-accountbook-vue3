@@ -1,107 +1,36 @@
 <template>
+  <!-- 파이 차트 컴포넌트 템플릿 -->
   <div>
+    <!-- 캔버스 요소 -->
     <canvas ref="canvas"></canvas>
   </div>
 </template>
 
 <script>
-import { ref, onMounted, watch } from 'vue';
-import { Chart, registerables } from 'chart.js';
-import ChartDataLabels from 'chartjs-plugin-datalabels';
-
-Chart.register(...registerables, ChartDataLabels);
+import { usePieChart } from '../stores/usePieChart'; // PieChart 커스텀 훅 가져오기
 
 export default {
-  name: 'PieChart',
+  name: 'PieChart', // 컴포넌트 이름
   props: {
     chartData: {
+      // 차트 데이터 프로퍼티
       type: Object,
       required: true,
     },
   },
   setup(props) {
-    const canvas = ref(null);
-    let chartInstance = null;
-
-    const renderChart = () => {
-      if (chartInstance) {
-        chartInstance.destroy();
-      }
-
-      if (canvas.value) {
-        // 정렬된 데이터 생성
-        const sortedData = props.chartData.labels
-          .map((label, index) => ({
-            label,
-            value: props.chartData.datasets[0].data[index],
-            backgroundColor: props.chartData.datasets[0].backgroundColor[index],
-          }))
-          .sort((a, b) => b.value - a.value);
-
-        const sortedLabels = sortedData.map((item) => item.label);
-        const sortedValues = sortedData.map((item) => item.value);
-        const sortedColors = sortedData.map((item) => item.backgroundColor);
-
-        chartInstance = new Chart(canvas.value.getContext('2d'), {
-          type: 'pie',
-          data: {
-            labels: sortedLabels,
-            datasets: [
-              {
-                label: 'Category',
-                backgroundColor: sortedColors,
-                data: sortedValues,
-              },
-            ],
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              tooltip: {
-                callbacks: {
-                  label: function (context) {
-                    const label = context.label || '';
-                    const value = context.raw;
-                    const total = context.chart._metasets[0].total;
-                    const percentage = ((value / total) * 100).toFixed(2) + '%';
-                    return `${label}: ${percentage}`;
-                  },
-                },
-              },
-              datalabels: {
-                display: false, // 라벨 비활성화
-              },
-            },
-          },
-        });
-      }
-    };
-
-    onMounted(() => {
-      if (props.chartData) {
-        renderChart();
-      }
-    });
-
-    watch(
-      () => props.chartData,
-      (newVal) => {
-        if (newVal) {
-          renderChart();
-        }
-      },
-      { deep: true }
-    );
-
-    return { canvas };
+    const { canvas } = usePieChart(props); // PieChart 훅 사용하여 캔버스 요소 가져오기
+    return { canvas }; // 캔버스 요소 반환
   },
 };
 </script>
 
 <style scoped>
+/* 컴포넌트 내부 스타일 */
+
+/* 캔버스 요소 스타일 */
 canvas {
-  width: 100%;
-  height: 400px;
+  width: 100%; /* 너비 100% 설정 */
+  height: 400px; /* 높이 400px 설정 */
 }
 </style>
