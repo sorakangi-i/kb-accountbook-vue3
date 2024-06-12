@@ -1,16 +1,32 @@
 <template>
-  <div>
-    <h1>Acount</h1>
-    <p>Welcome to the Acoount</p>
+  <div class="account">
+    <h1>Account Information</h1>
+    <Table />
   </div>
 </template>
 
 <script>
+import Table from '@/components/Table.vue';
+
 export default {
-  name: 'Home',
+  components: {
+    Table,
+  },
 };
 </script>
 
 <style scoped>
-/* 스타일 정의 */
+.account {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh; /* 전체 화면 높이 */
+}
+
+h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  text-align: center;
+}
 </style>
