@@ -1,5 +1,5 @@
 <template>
-  <!-- 원형 프로그레스 바 컴포넌트 템플릿 -->
+  <!-- 원형 프로그레스 바 컴포넌트 템플릿  잘 모르겠다...-->
   <div class="circular-progress-bar">
     <!-- SVG를 이용한 원형 차트 -->
     <svg class="circular-chart" viewBox="0 0 50 50">
