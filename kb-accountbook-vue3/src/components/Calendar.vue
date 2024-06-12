@@ -29,39 +29,28 @@
         class="date"
         v-for="date in calendarStore.calendarDays"
         :key="date.date ? date.date.getDate() : 'empty'"
+        @click="selectDate(date.date)"
       >
         <span v-if="date.date">{{ date.date.getDate() }}</span>
-        <div
-          v-if="date.hasBudget"
-          class="budget-icon"
-          @click="toggleDetails(date.date)"
-        >
-          ●
-        </div>
+        <div v-if="date.hasBudget" class="budget-icon">●</div>
       </div>
     </div>
-    <TransactionDetails
-      v-if="showDetails"
-      :transactions="selectedTransactions"
-      :transactionDate="selectedDate"
-    />
+    <TransactionDetails />
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useCalendarStore } from '@/stores/calendarStore';
+import { useTransactionStore } from '@/stores/transactionStore';
 import TransactionDetails from '@/components/TransactionDetails.vue';
 
 const calendarStore = useCalendarStore();
+const transactionStore = useTransactionStore();
 
 const showPicker = ref(false);
 const selectedYear = ref(calendarStore.currentYear);
 const selectedMonth = ref(calendarStore.currentMonth);
-const showDetails = ref(false);
-const selectedTransactions = ref([]);
-const selectedDate = ref('');
-
 const years = Array.from({ length: 31 }, (_, i) => 2020 + i);
 const months = Array.from({ length: 12 }, (_, i) => i + 1);
 const days = ['일', '월', '화', '수', '목', '금', '토'];
@@ -87,20 +76,14 @@ const prevMonth = () => {
   calendarStore.prevMonth();
 };
 
-const toggleDetails = (date) => {
-  const dateString = `${date.getFullYear()}-${
-    date.getMonth() + 1
-  }-${date.getDate()}`;
-  if (selectedDate.value === dateString && showDetails.value) {
-    showDetails.value = false;
-  } else {
-    selectedDate.value = dateString;
-    selectedTransactions.value = calendarStore.budgetData.filter(
-      (transaction) =>
-        new Date(transaction.date).toDateString() === date.toDateString()
-    );
-    showDetails.value = true;
-  }
+const selectDate = (date) => {
+  if (!date) return;
+  const selectedDateString = date.toISOString().split('T')[0];
+  const filteredTransactions = calendarStore.budgetData.filter(
+    (transaction) => transaction.date === selectedDateString
+  );
+  transactionStore.setSelectedDate(selectedDateString);
+  transactionStore.setSelectedTransactions(filteredTransactions);
 };
 </script>
 
@@ -154,6 +137,7 @@ const toggleDetails = (date) => {
   position: relative;
   text-align: left;
   padding: 50px;
+  cursor: pointer;
 }
 
 .date span {
@@ -165,31 +149,8 @@ const toggleDetails = (date) => {
 .budget-icon {
   color: red;
   font-size: 12px;
-  cursor: pointer;
   position: absolute;
   bottom: 5px;
   right: 5px;
-}
-
-.transaction-details {
-  margin-top: 20px;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-}
-
-.transaction-header {
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-
-.transaction-item {
-  display: flex;
-  justify-content: space-between;
-  padding: 5px 0;
-}
-
-.transaction-memo {
-  text-align: right;
 }
 </style>

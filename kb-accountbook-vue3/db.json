@@ -124,20 +124,11 @@
       "date": "2024-06-10",
       "type": "지출",
       "category": "용돈",
+      "paymentMethod": "현금",
       "amount": 10000,
       "memo": "부모님 용돈",
-      "period": true
-    },
-    {
-      "id": "a49a",
-      "type": "지출",
-      "date": "2024-06-10",
-      "category": "온라인쇼핑",
-      "paymentMethod": "현금",
-      "amount": 5000,
-      "memo": "콩나물국밥",
-      "duration": null,
-      "period": false
+      "period": true,
+      "duration": "weekly"
     },
     {
       "id": "aa92",
@@ -149,16 +140,27 @@
       "memo": "옷",
       "duration": null,
       "period": false
+    },
+    {
+      "id": "c9cd",
+      "type": "수입",
+      "date": "2024-06-11",
+      "category": "용돈",
+      "paymentMethod": "현금",
+      "amount": 100000,
+      "memo": "부모님께 용돈 받음",
+      "duration": null,
+      "period": false
     }
   ],
   "periodic": [
     {
       "date": "2024-06-10",
-      "type": "income",
+      "type": "지출",
       "category": "용돈",
       "amount": 10000,
       "memo": "매주 부모님 용돈",
-      "duration": "week",
+      "duration": "weekly",
       "id": "109a"
     }
   ]

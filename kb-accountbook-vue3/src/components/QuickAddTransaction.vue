@@ -27,7 +27,7 @@
         </select>
       </div>
       <div class="form-group">
-        <label for="paymentMethod">결제수단</label>
+        <label for="paymentMethod">거래수단</label>
         <select v-model="paymentMethod" id="paymentMethod" required>
           <option
             v-for="method in budgetStore.paymentMethods"
@@ -122,6 +122,7 @@ const updateCategories = (newType) => {
   }
 };
 
+//진짜 모르는 부분
 const formatAmount = (event) => {
   const input = event.target.value.replace(/[^0-9]/g, '');
   const numberValue = parseInt(input, 10);
