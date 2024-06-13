@@ -1,5 +1,5 @@
 <template>
-  <!-- 원형 프로그레스 바 컴포넌트 템플릿  잘 모르겠다...-->
+  <!-- 원형 프로그레스 바 컴포넌트 템플릿 -->
   <div class="circular-progress-bar">
     <!-- SVG를 이용한 원형 차트 -->
     <svg class="circular-chart" viewBox="0 0 50 50">
@@ -14,6 +14,7 @@
       <path
         class="circle"
         :stroke-dasharray="progressPath"
+        :style="{ stroke: circleColor }"
         d="M25 2.5
         a 22.5 22.5 0 0 1 0 45
         a 22.5 22.5 0 0 1 0 -45"
@@ -55,6 +56,16 @@ export default {
       const progress = (this.percentage / 100) * circumference; // 진행 정도 계산
       return `${progress} ${circumference}`; // 진행 경로 반환
     },
+    circleColor() {
+      // 위험 수준에 따른 색상 결정
+      if (this.percentage > 80) {
+        return '#ff0000'; // 붉은색
+      } else if (this.percentage > 50) {
+        return '#ff9800'; // 주황색
+      } else {
+        return '#4caf50'; // 녹색
+      }
+    },
   },
 };
 </script>
@@ -91,7 +102,6 @@ export default {
 .circle {
   fill: none; /* 채우기 제거 */
   stroke-width: 2.8; /* 테두리 너비 */
-  stroke: #4caf50; /* 테두리 색상 */
   stroke-linecap: round; /* 테두리 라인 스타일 */
   animation: progress 1s ease-out forwards; /* 애니메이션 효과 */
 }

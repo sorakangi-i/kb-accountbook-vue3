@@ -171,6 +171,17 @@
       "memo": "월급",
       "duration": null,
       "period": false
+    },
+    {
+      "id": "ca7f",
+      "type": "지출",
+      "date": "2024-06-13",
+      "category": "카페/간식",
+      "paymentMethod": "현금",
+      "amount": 40000,
+      "memo": "커피수혈",
+      "duration": null,
+      "period": false
     }
   ],
   "periodic": [

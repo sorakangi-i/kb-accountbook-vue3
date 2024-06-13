@@ -1,17 +1,17 @@
 <template>
   <div id="app">
     <header>
-      <h1>kb-account book -vue3</h1>
+      <h1>가계부</h1>
       <nav>
         <router-link to="/"><i class="fa-solid fa-house"></i> Home</router-link>
         <router-link to="/statistic"
           ><i class="fa-solid fa-chart-pie"></i> Statistics</router-link
         >
-        <router-link to="/profile"
-          ><i class="fa-solid fa-user"></i> Profile</router-link
-        >
         <router-link to="/account"
           ><i class="fa-solid fa-receipt"></i> Account</router-link
+        >
+        <router-link to="/profile"
+          ><i class="fa-solid fa-user"></i> Profile</router-link
         >
       </nav>
     </header>
