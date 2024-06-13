@@ -3,15 +3,17 @@
     <header>
       <h1>가계부</h1>
       <nav>
-        <router-link to="/"><i class="fa-solid fa-house"></i> Home</router-link>
+        <router-link to="/"
+          ><i class="fa-solid fa-house"></i>&nbsp; Home</router-link
+        >
         <router-link to="/statistic"
-          ><i class="fa-solid fa-chart-pie"></i> Statistics</router-link
+          ><i class="fa-solid fa-chart-pie"></i>&nbsp; Statistics</router-link
         >
         <router-link to="/account"
-          ><i class="fa-solid fa-receipt"></i> Account</router-link
+          ><i class="fa-solid fa-receipt"></i>&nbsp; Account</router-link
         >
         <router-link to="/profile"
-          ><i class="fa-solid fa-user"></i> Profile</router-link
+          ><i class="fa-solid fa-user"></i>&nbsp; Profile</router-link
         >
       </nav>
     </header>

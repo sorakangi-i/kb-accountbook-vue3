@@ -4,16 +4,16 @@
     <!-- 수입, 지출 토글 버튼 -->
     <div class="toggle-buttons">
       <button @click="toggleView('income')">
-        <i class="fa-solid fa-coins"></i> Show Income
+        <i class="fa-solid fa-coins"></i> &nbsp; 소비 통계
       </button>
       <button @click="toggleView('expense')">
-        <i class="fa-solid fa-wallet"></i> Show Expense
+        <i class="fa-solid fa-wallet"></i> &nbsp; 지출 통계
       </button>
     </div>
     <!-- 수입 섹션 -->
     <div v-if="showIncome">
       <h2 class="details-container">
-        <i class="fa-solid fa-coins"></i> Income
+        <i class="fa-solid fa-coins"></i> &nbsp; 소비
       </h2>
       <!-- 수입 원형 차트 -->
       <br />
@@ -39,7 +39,7 @@
             </div>
             <!-- 수입 세부 정보 테이블에서 카테고리를 설정하는 방법! -->
             <div class="table-cell category">
-              <i :class="getCategoryIcon(key)"></i> {{ key }}
+              <i :class="getCategoryIcon(key)"></i> &nbsp; {{ key }}
             </div>
             <div class="table-cell amount income">
               {{ formatAmount(value.amount) }}원
@@ -51,7 +51,7 @@
     <!-- 지출 섹션 -->
     <div v-if="showExpense">
       <h2 class="details-container">
-        <i class="fa-solid fa-wallet"></i> Expenses
+        <i class="fa-solid fa-wallet"></i> &nbsp; 지출
       </h2>
       <br />
 
@@ -77,8 +77,8 @@
       </div>
       <!-- 지출 세부 정보 -->
       <div class="details-container">
-        <h3><i class="fa-solid fa-wallet"></i> Expense Details</h3>
         <!-- 지출 세부 정보 테이블 -->
+        <br />
         <div class="details-table">
           <div
             class="table-row"
@@ -92,7 +92,7 @@
               {{ value.percentage }}%
             </div>
             <div class="table-cell category">
-              <i :class="getCategoryIcon(key)"></i> {{ key }}
+              <i :class="getCategoryIcon(key)"></i> &nbsp; {{ key }}
             </div>
             <div class="table-cell amount expense">
               {{ formatAmount(value.amount) }}원
