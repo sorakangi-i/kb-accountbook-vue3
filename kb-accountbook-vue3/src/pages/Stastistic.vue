@@ -1,7 +1,5 @@
 <template>
-  <!-- 통계 페이지 템플릿 -->
   <div class="statistics-page">
-    <!-- 수입, 지출 토글 버튼 -->
     <div class="toggle-buttons">
       <button @click="toggleView('income')">
         <i class="fa-solid fa-coins"></i> &nbsp; 소비 통계
@@ -10,101 +8,119 @@
         <i class="fa-solid fa-wallet"></i> &nbsp; 지출 통계
       </button>
     </div>
-    <!-- 수입 섹션 -->
     <div v-if="showIncome">
       <h2 class="details-container">
         <i class="fa-solid fa-coins"></i> &nbsp; 소비
       </h2>
-      <!-- 수입 원형 차트 -->
       <br />
-
       <div class="chart-container">
         <PieChart v-if="incomeChartData" :chartData="incomeChartData" />
-        <br />
-        <br />
+        <br /><br />
       </div>
-      <!-- 수입 세부 정보 -->
       <div class="details-container">
-        <!-- 수입 세부 정보 테이블 -->
-        <div class="details-table">
-          <div
-            class="table-row"
-            v-for="(value, key, index) in sortedIncomeDetails"
-            :key="key"
-          >
+        <div class="details-table-wrapper">
+          <div class="details-table">
             <div
-              class="table-cell percentage"
-              :style="{ backgroundColor: sortedIncomeColors[index] }"
+              class="table-row"
+              v-for="(value, key, index) in sortedIncomeDetails"
+              :key="key"
             >
-              {{ value.percentage }}%
+              <div
+                class="table-cell percentage"
+                :style="{ backgroundColor: sortedIncomeColors[index] }"
+              >
+                {{ value.percentage }}%
+              </div>
+              <div class="table-cell category">
+                <i :class="getCategoryIcon(key)"></i> &nbsp; {{ key }}
+              </div>
+              <div class="table-cell amount income">
+                {{ formatAmount(value.amount) }}원
+              </div>
             </div>
-            <!-- 수입 세부 정보 테이블에서 카테고리를 설정하는 방법! -->
-            <div class="table-cell category">
-              <i :class="getCategoryIcon(key)"></i> &nbsp; {{ key }}
-            </div>
-            <div class="table-cell amount income">
-              {{ formatAmount(value.amount) }}원
-            </div>
+          </div>
+          <div v-if="showCategoryDetail" class="category-detail">
+            <CircularProgressBar
+              :percentage="
+                parseFloat(
+                  calculateAchievement(
+                    selectedCategoryData.goal,
+                    selectedCategoryData.actual
+                  )
+                )
+              "
+              :details="`목표: ${formatAmount(selectedCategoryData.goal)}`"
+              :risk="selectedCategoryRisk"
+            />
           </div>
         </div>
       </div>
     </div>
-    <!-- 지출 섹션 -->
     <div v-if="showExpense">
       <h2 class="details-container">
         <i class="fa-solid fa-wallet"></i> &nbsp; 지출
       </h2>
       <br />
-
-      <!-- 지출 원형 차트와 목표 달성율 표시 -->
       <div class="chart-and-target">
         <div class="chart-container">
           <PieChart v-if="expenseChartData" :chartData="expenseChartData" />
         </div>
-        <div
-          v-for="saving in savings"
-          :key="saving.id"
-          class="target-achievement"
-        >
-          <!-- 원형 프로그레스 바 -->
+        <div class="target-achievement">
           <CircularProgressBar
             :percentage="
-              parseFloat(calculateAchievement(saving.goal, totalExpense))
+              parseFloat(
+                calculateAchievement(totalGoalAmount, totalActualExpense)
+              )
             "
-            :details="`목표: ${formatAmount(saving.goal)}`"
-            :risk="calculateRisk(saving.goal, totalExpense)"
+            :details="`목표: ${formatAmount(totalGoalAmount)}`"
+            :risk="calculateRisk(totalGoalAmount, totalActualExpense)"
           />
         </div>
       </div>
-      <!-- 지출 세부 정보 -->
       <div class="details-container">
-        <!-- 지출 세부 정보 테이블 -->
         <br />
-        <div class="details-table">
-          <div
-            class="table-row"
-            v-for="(value, key, index) in sortedExpenseDetails"
-            :key="key"
-          >
+        <div class="details-table-wrapper">
+          <div class="details-table">
             <div
-              class="table-cell percentage"
-              :style="{ backgroundColor: sortedExpenseColors[index] }"
+              class="table-row"
+              v-for="(value, key, index) in sortedExpenseDetails"
+              :key="key"
             >
-              {{ value.percentage }}%
+              <div
+                class="table-cell percentage"
+                :style="{ backgroundColor: sortedExpenseColors[index] }"
+              >
+                {{ value.percentage }}%
+              </div>
+              <div class="table-cell category">
+                <i :class="getCategoryIcon(key)"></i> &nbsp; {{ key }}
+              </div>
+              <div class="table-cell amount expense">
+                {{ formatAmount(value.amount) }}원
+              </div>
+              <div class="table-cell">
+                <button @click="selectCategory(key)">소비 확인</button>
+              </div>
             </div>
-            <div class="table-cell category">
-              <i :class="getCategoryIcon(key)"></i> &nbsp; {{ key }}
-            </div>
-            <div class="table-cell amount expense">
-              {{ formatAmount(value.amount) }}원
-            </div>
+          </div>
+          <div v-if="showCategoryDetail" class="category-detail">
+            <CircularProgressBar
+              :percentage="
+                parseFloat(
+                  calculateAchievement(
+                    selectedCategoryData.goal,
+                    selectedCategoryData.actual
+                  )
+                )
+              "
+              :details="`목표: ${formatAmount(selectedCategoryData.goal)}`"
+              :risk="selectedCategoryRisk"
+            />
           </div>
         </div>
       </div>
     </div>
-    <!-- 데이터 로딩 중일 때 표시되는 메시지 -->
     <p v-if="!incomeChartData && !expenseChartData">Loading...</p>
-    <!-- 페이지 하단에 표시되는 footer -->
     <div class="footer">
       <p>&copy; 2024 My Financial Dashboard</p>
     </div>
@@ -123,7 +139,6 @@ export default {
     CircularProgressBar,
   },
   setup() {
-    // 통계 데이터 및 관련 기능을 가져오는 커스텀 훅 사용
     const {
       data,
       incomeChartData,
@@ -144,9 +159,15 @@ export default {
       toggleView,
       savings,
       totalExpense,
+      totalGoalAmount,
+      totalActualExpense,
+      selectedCategory,
+      selectedCategoryData,
+      selectCategory,
+      selectedCategoryRisk,
+      showCategoryDetail, // 상세보기 상태 추가
     } = useStatistics();
 
-    // 카테고리와 아이콘 클래스를 매핑하는 객체
     const categoryIconMap = {
       월급: 'fa-solid fa-dollar-sign',
       용돈: 'fa-solid fa-sack-dollar',
@@ -168,12 +189,10 @@ export default {
       기타: 'fa-solid fa-ellipsis',
     };
 
-    // 카테고리에 맞는 아이콘 클래스를 반환하는 함수
     const getCategoryIcon = (category) => {
       return categoryIconMap[category] || 'fa-solid fa-question';
     };
 
-    // 컴포넌트에 사용할 데이터와 기능 반환
     return {
       data,
       incomeChartData,
@@ -194,15 +213,20 @@ export default {
       toggleView,
       savings,
       totalExpense,
-      getCategoryIcon, // getCategoryIcon 함수 반환
+      totalGoalAmount,
+      totalActualExpense,
+      getCategoryIcon,
+      selectCategory,
+      selectedCategory,
+      selectedCategoryData,
+      selectedCategoryRisk,
+      showCategoryDetail, // 상세보기 상태 추가
     };
   },
 };
 </script>
 
 <style scoped>
-/* 스타일링이 scoped로 지정되어 해당 컴포넌트에만 적용됩니다. */
-
 .statistics-page {
   max-width: 900px;
   margin: 0 auto;
@@ -226,15 +250,21 @@ canvas {
   text-align: center;
 }
 
-.chart-container {
-  margin-bottom: 40px;
+.details-table-wrapper {
+  display: flex;
+  justify-content: center;
 }
 
 .details-table {
-  margin: 0 auto;
-  width: 80%;
-  max-width: 600px;
+  width: 70%;
   border-collapse: collapse;
+}
+
+.category-detail {
+  width: 30%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .table-row {
@@ -282,7 +312,7 @@ canvas {
 
 button {
   margin: 10px;
-  padding: 10px 20px;
+  padding: 8px 20px;
   border: none;
   background-color: #35495e;
   color: white;

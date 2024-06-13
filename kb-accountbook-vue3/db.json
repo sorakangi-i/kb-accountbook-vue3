@@ -11,9 +11,14 @@
   ],
   "saving": [
     {
-      "categoryAllowance": "200,000원",
+      "categoryAllowance": "300,000원",
       "category": "온라인쇼핑",
       "id": "c9d8"
+    },
+    {
+      "categoryAllowance": "300,000원",
+      "category": "용돈",
+      "id": "c20d8"
     }
   ],
   "incomeCategories": [
@@ -134,7 +139,7 @@
       "date": "2024-06-12",
       "category": "온라인쇼핑",
       "paymentMethod": "현금",
-      "amount": 50000,
+      "amount": 160000,
       "memo": "옷",
       "duration": null,
       "period": false

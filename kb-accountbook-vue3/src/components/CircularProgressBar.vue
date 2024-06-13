@@ -25,7 +25,7 @@
     <!-- 세부 정보 -->
     <div class="details">{{ details }} 원</div>
     <!-- 위험 수준 -->
-    <div class="risk">Risk: {{ risk }}</div>
+    <div class="risk"> {{ risk }}</div>
   </div>
 </template>
 
