@@ -3,7 +3,8 @@
     <div class="calendar-header">
       <button @click="prevMonth">←</button>
       <div class="current-month">
-        {{ calendarStore.currentYear }}년 {{ calendarStore.currentMonth }}월
+        {{ calendarStore.currentYear }}년
+        {{ calendarStore.currentMonth }}월&nbsp;
         <button class="dropdown-button" @click="toggleMonthPicker">▼</button>
       </div>
       <button @click="nextMonth">→</button>
@@ -41,7 +42,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { useCalendarStore } from '@/stores/calendarStore';
+import { useCalendarStore } from '@/stores/calendarStore'; //
 import { useTransactionStore } from '@/stores/transactionStore';
 import TransactionDetails from '@/components/TransactionDetails.vue';
 
@@ -79,6 +80,13 @@ const prevMonth = () => {
 const selectDate = (date) => {
   if (!date) return;
   const selectedDateString = date.toISOString().split('T')[0];
+
+  if (transactionStore.selectedDate === selectedDateString) {
+    // 같은 날짜를 클릭하면 세부 내역을 숨깁니다.
+    transactionStore.setSelectedDate('');
+    transactionStore.setSelectedTransactions([]);
+    return;
+  }
 
   const filteredTransactions = calendarStore.budgetData.filter(
     (transaction) => {
@@ -132,14 +140,24 @@ const selectDate = (date) => {
   max-width: 70%;
   margin: 0 auto;
   padding: 20px;
+  margin-top: 50px;
+  border: 1px solid lightgray;
 }
 
 .calendar-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
   font-size: 1.2em;
+}
+
+.calendar-header button {
+  font-size: 0.9em; /* 버튼 크기를 줄이기 */
+}
+
+.dropdown-button {
+  font-size: 15px;
 }
 
 .month-picker {
@@ -149,7 +167,7 @@ const selectDate = (date) => {
 }
 
 .move-button {
-  margin-left: 15px;
+  margin-left: 13px;
 }
 
 .calendar {
@@ -187,10 +205,26 @@ const selectDate = (date) => {
 }
 
 .budget-icon {
-  color: red;
-  font-size: 12px;
+  color: #00fa9a;
+  font-size: 15px;
   position: absolute;
   bottom: 5px;
-  right: 5px;
+  right: 7px;
+}
+
+.day:nth-child(1) {
+  color: red; /* 일요일 색상 */
+}
+
+.day:nth-child(7) {
+  color: blue; /* 토요일 색상 */
+}
+
+.day:nth-child(2),
+.day:nth-child(3),
+.day:nth-child(4),
+.day:nth-child(5),
+.day:nth-child(6) {
+  color: gray; /* 월요일부터 금요일까지 색상 */
 }
 </style>

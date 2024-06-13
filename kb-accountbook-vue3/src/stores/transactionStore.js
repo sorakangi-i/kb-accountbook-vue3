@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
 
+//달력에서 클릭한 날짜(date) & 해당 날짜의 거래 내역 데이터(transaction)
 export const useTransactionStore = defineStore('transactionStore', {
   state: () => ({
     selectedDate: '',
