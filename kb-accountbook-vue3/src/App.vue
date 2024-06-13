@@ -58,6 +58,7 @@ nav a:hover {
   text-decoration: underline;
 }
 
+/* 열려있는 페이지 표시하는 박스*/
 nav a.active-link {
   background-color: #ffffff;
   color: #2dce89;
