@@ -20,10 +20,11 @@
 
       <div class="chart-container">
         <PieChart v-if="incomeChartData" :chartData="incomeChartData" />
+        <br />
+        <br />
       </div>
       <!-- 수입 세부 정보 -->
       <div class="details-container">
-        <h3><i class="fa-solid fa-coins"></i> Income Details</h3>
         <!-- 수입 세부 정보 테이블 -->
         <div class="details-table">
           <div
