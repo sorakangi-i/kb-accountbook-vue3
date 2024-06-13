@@ -9,7 +9,7 @@ Chart.register(...registerables, ChartDataLabels);
 export function usePieChart(props) {
   // 차트를 그릴 캔버스 요소에 대한 참조를 생성합니다.
   //ref를 사용하여 차트를 그릴 캔버스 요소에 대한 참조를 생성합니다.
-  //역시 거의 다 ref를 사용하는 구만   
+  //역시 거의 다 ref를 사용하는 구만
   const canvas = ref(null);
   // 차트 인스턴스를 저장할 변수를 초기화합니다. 변수들을 초기화 하지 않으면 에러가 나드라
   let chartInstance = null;
@@ -73,6 +73,15 @@ export function usePieChart(props) {
             // 데이터 라벨 플러그인 옵션 설정
             datalabels: {
               display: false, // 데이터 라벨 표시 비활성화
+            },
+            // 범례(legend) 옵션 설정
+            legend: {
+              labels: {
+                font: {
+                  size: 14, // 폰트 크기
+                  weight: 'bold', // 폰트 굵기
+                },
+              },
             },
           },
         },

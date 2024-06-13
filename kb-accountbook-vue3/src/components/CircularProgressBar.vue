@@ -116,7 +116,7 @@ export default {
 /* 세부 정보 스타일 */
 .details {
   margin-top: 10px; /* 상단 여백 설정 */
-  font-size: 0.85em; /* 글꼴 크기 */
+  font-size: 1em; /* 글꼴 크기 */
 }
 
 /* 위험 수준 스타일 */
