@@ -120,10 +120,16 @@ export default {
       return Number(amount).toLocaleString();
     },
     deleteRow(id) {
-      const index = this.budget.findIndex(item => item.id === id);
-      if (index !== -1) {
-        this.budget.splice(index, 1);
-      }
+      axios.delete(`http://localhost:3000/budget/${id}`)
+        .then(() => {
+          const index = this.budget.findIndex(item => item.id === id);
+          if (index !== -1) {
+            this.budget.splice(index, 1);
+          }
+        })
+        .catch(error => {
+          console.error('Error deleting row:', error);
+        });
     }
   }
 }
