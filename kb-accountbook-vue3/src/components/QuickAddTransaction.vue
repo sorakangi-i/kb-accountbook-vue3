@@ -238,6 +238,7 @@ const submitTransaction = async () => {
   width: 85%;
   border: 1px solid lightgray;
   border-radius: 60px;
+  box-shadow: 0 7px 20px rgba(0, 0, 0, 0.1);
 }
 
 .h3 {
