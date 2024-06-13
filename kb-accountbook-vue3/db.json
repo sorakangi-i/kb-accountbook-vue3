@@ -11,9 +11,14 @@
   ],
   "saving": [
     {
-      "categoryAllowance": "200,000원",
+      "categoryAllowance": "300,000원",
       "category": "온라인쇼핑",
       "id": "c9d8"
+    },
+    {
+      "categoryAllowance": "300,000원",
+      "category": "용돈",
+      "id": "c20d8"
     }
   ],
   "incomeCategories": [
@@ -134,7 +139,7 @@
       "date": "2024-06-12",
       "category": "온라인쇼핑",
       "paymentMethod": "현금",
-      "amount": 50000,
+      "amount": 160000,
       "memo": "옷",
       "duration": null,
       "period": false
@@ -147,6 +152,39 @@
       "paymentMethod": "현금",
       "amount": 100000,
       "memo": "부모님께 용돈 받음",
+      "duration": null,
+      "period": false
+    },
+    {
+      "id": "6888",
+      "type": "지출",
+      "date": "2024-06-06",
+      "category": "패션/쇼핑",
+      "paymentMethod": "현금",
+      "amount": 10000,
+      "memo": "니트",
+      "duration": null,
+      "period": false
+    },
+    {
+      "id": "e061",
+      "type": "수입",
+      "date": "2024-06-05",
+      "category": "월급",
+      "paymentMethod": "현금",
+      "amount": 100000,
+      "memo": "월급",
+      "duration": null,
+      "period": false
+    },
+    {
+      "id": "ca7f",
+      "type": "지출",
+      "date": "2024-06-13",
+      "category": "카페/간식",
+      "paymentMethod": "현금",
+      "amount": 40000,
+      "memo": "커피수혈",
       "duration": null,
       "period": false
     }
