@@ -2,7 +2,15 @@ import axios from 'axios';
 import { ref, onMounted, computed, watch } from 'vue';
 
 export function useStatistics() {
-  const data = ref(null);
+  const data = ref({
+    member: [],
+    saving: [],
+    incomeCategories: [],
+    expenseCategories: [],
+    paymentMethods: [],
+    types: [],
+    budget: [],
+  });
   const incomeChartData = ref(null);
   const expenseChartData = ref(null);
   const incomeDetails = ref({});
@@ -22,12 +30,39 @@ export function useStatistics() {
   const selectedCategory = ref(null);
   const selectedCategoryData = ref(null);
   const selectedCategoryRisk = ref(null);
-  const showCategoryDetail = ref(false); // 카테고리 상세보기 상태 추가
+  const showCategoryDetail = ref(false);
 
   const fetchData = async () => {
     try {
-      const response = await axios.get('/db.json');
-      data.value = response.data;
+      const [
+        memberRes,
+        savingRes,
+        incomeCategoriesRes,
+        expenseCategoriesRes,
+        paymentMethodsRes,
+        typesRes,
+        budgetRes,
+      ] = await Promise.all([
+        axios.get('https://flicker-ripple-twilight.glitch.me/member'),
+        axios.get('https://flicker-ripple-twilight.glitch.me/saving'),
+        axios.get('https://flicker-ripple-twilight.glitch.me/incomeCategories'),
+        axios.get(
+          'https://flicker-ripple-twilight.glitch.me/expenseCategories'
+        ),
+        axios.get('https://flicker-ripple-twilight.glitch.me/paymentMethods'),
+        axios.get('https://flicker-ripple-twilight.glitch.me/types'),
+        axios.get('https://flicker-ripple-twilight.glitch.me/budget'),
+      ]);
+
+      data.value = {
+        member: memberRes.data,
+        saving: savingRes.data,
+        incomeCategories: incomeCategoriesRes.data,
+        expenseCategories: expenseCategoriesRes.data,
+        paymentMethods: paymentMethodsRes.data,
+        types: typesRes.data,
+        budget: budgetRes.data,
+      };
 
       const incomeCategoryMap = Object.fromEntries(
         data.value.incomeCategories.map((cat) => [cat.id, cat.name])
@@ -219,11 +254,11 @@ export function useStatistics() {
   const calculateRisk = (goal, totalExpense) => {
     const achievement = calculateAchievement(goal, totalExpense);
     if (achievement >= 80) {
-      return '비만';
+      return 'High';
     } else if (achievement >= 50) {
-      return '평범';
+      return 'Medium';
     } else {
-      return '건강';
+      return 'Low';
     }
   };
 
@@ -245,7 +280,6 @@ export function useStatistics() {
 
   const selectCategory = (category) => {
     if (selectedCategory.value === category) {
-      // 이미 선택된 카테고리를 다시 클릭하면 상세보기 상태를 토글
       showCategoryDetail.value = !showCategoryDetail.value;
     } else {
       selectedCategory.value = category;
@@ -259,7 +293,7 @@ export function useStatistics() {
         saving ? saving.goal : 0,
         actual
       );
-      showCategoryDetail.value = true; // 새로운 카테고리를 선택하면 상세보기 표시
+      showCategoryDetail.value = true;
     }
   };
 
@@ -293,6 +327,6 @@ export function useStatistics() {
     selectedCategoryData,
     selectCategory,
     selectedCategoryRisk,
-    showCategoryDetail, // 상세보기 상태 반환
+    showCategoryDetail,
   };
 }

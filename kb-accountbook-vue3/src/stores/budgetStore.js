@@ -14,7 +14,7 @@ export const useBudgetStore = defineStore('budget', {
     async fetchIncomeCategories() {
       try {
         const response = await axios.get(
-          'http://localhost:3000/incomeCategories'
+          'https://flicker-ripple-twilight.glitch.me/incomeCategories'
         );
         this.incomeCategories = response.data;
         console.log(
@@ -28,7 +28,7 @@ export const useBudgetStore = defineStore('budget', {
     async fetchExpenseCategories() {
       try {
         const response = await axios.get(
-          'http://localhost:3000/expenseCategories'
+          'https://flicker-ripple-twilight.glitch.me/expenseCategories'
         );
         this.expenseCategories = response.data;
         console.log(
@@ -42,7 +42,7 @@ export const useBudgetStore = defineStore('budget', {
     async fetchPaymentMethods() {
       try {
         const response = await axios.get(
-          'http://localhost:3000/paymentMethods'
+          'https://flicker-ripple-twilight.glitch.me/paymentMethods'
         );
         this.paymentMethods = response.data;
         console.log('Payment methods:', this.paymentMethods); // 디버깅용 로그 추가
@@ -52,7 +52,9 @@ export const useBudgetStore = defineStore('budget', {
     },
     async fetchTypes() {
       try {
-        const response = await axios.get('http://localhost:3000/types');
+        const response = await axios.get(
+          'https://flicker-ripple-twilight.glitch.me/types'
+        );
         this.types = response.data;
         console.log('Types:', this.types); // 디버깅용 로그 추가
       } catch (error) {
@@ -61,7 +63,9 @@ export const useBudgetStore = defineStore('budget', {
     },
     async fetchBudget() {
       try {
-        const response = await axios.get('http://localhost:3000/budget');
+        const response = await axios.get(
+          'https://flicker-ripple-twilight.glitch.me/budget'
+        );
         this.budget = response.data;
       } catch (error) {
         console.error('Error fetching budget:', error);
@@ -69,7 +73,9 @@ export const useBudgetStore = defineStore('budget', {
     },
     async fetchPeriodic() {
       try {
-        const response = await axios.get('http://localhost:3000/periodic');
+        const response = await axios.get(
+          'https://flicker-ripple-twilight.glitch.me/periodic'
+        );
         this.periodic = response.data;
       } catch (error) {
         console.error('Error fetching periodic:', error);
@@ -77,7 +83,10 @@ export const useBudgetStore = defineStore('budget', {
     },
     async addBudget(transaction) {
       try {
-        await axios.post('http://localhost:3000/budget', transaction);
+        await axios.post(
+          'https://flicker-ripple-twilight.glitch.me/budget',
+          transaction
+        );
         this.fetchBudget();
       } catch (error) {
         console.error('Error adding transaction:', error);

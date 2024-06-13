@@ -87,7 +87,9 @@ export const useCalendarStore = defineStore('calendar', {
   actions: {
     async fetchBudgetData() {
       try {
-        const budgetResponse = await axios.get('http://localhost:3000/budget');
+        const budgetResponse = await axios.get(
+          'https://flicker-ripple-twilight.glitch.me/budget'
+        );
         this.budgetData = budgetResponse.data;
       } catch (error) {
         console.error('Error fetching budget data:', error);

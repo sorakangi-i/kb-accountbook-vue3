@@ -181,15 +181,17 @@ export default {
   methods: {
     async fetchData() {
       try {
-        const budgetResponse = await axios.get('http://localhost:3000/budget');
+        const budgetResponse = await axios.get(
+          'https://flicker-ripple-twilight.glitch.me/budget'
+        );
         const expenseCategoriesResponse = await axios.get(
-          'http://localhost:3000/expenseCategories'
+          'https://flicker-ripple-twilight.glitch.me/expenseCategories'
         );
         const incomeCategoriesResponse = await axios.get(
-          'http://localhost:3000/incomeCategories'
+          'https://flicker-ripple-twilight.glitch.me/incomeCategories'
         );
         const paymentMethodsResponse = await axios.get(
-          'http://localhost:3000/paymentMethods'
+          'https://flicker-ripple-twilight.glitch.me/paymentMethods'
         );
 
         this.budget = budgetResponse.data;
@@ -209,7 +211,7 @@ export default {
     deleteSelected() {
       this.selectedItems.forEach((id) => {
         axios
-          .delete(`http://localhost:3000/budget/${id}`)
+          .delete(`https://flicker-ripple-twilight.glitch.me/budget/${id}`)
           .then(() => {
             const index = this.budget.findIndex((item) => item.id === id);
             if (index !== -1) {
