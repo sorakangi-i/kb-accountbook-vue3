@@ -71,6 +71,7 @@ export default {
 </script>
 
 <style scoped>
+
 /* 컴포넌트 내부 스타일 */
 
 /* 원형 프로그레스 바 컨테이너 스타일 */

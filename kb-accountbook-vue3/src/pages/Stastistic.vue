@@ -128,6 +128,7 @@
 </template>
 
 <script>
+
 import { useStatistics } from '../stores/useStatistics';
 import PieChart from '../components/PieChart.vue';
 import CircularProgressBar from '../components/CircularProgressBar.vue';
@@ -227,6 +228,7 @@ export default {
 </script>
 
 <style scoped>
+
 .statistics-page {
   max-width: 900px;
   margin: 0 auto;

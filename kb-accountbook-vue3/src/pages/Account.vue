@@ -1,32 +1,44 @@
 <template>
   <div class="account">
-    <h1>Account Information</h1>
-    <Table />
+    <QuickAddTransaction />
+    <br />
+    <h1 class="title"><b>수입 및 지출 내역</b></h1>
+    <br />
+    <div class="table-container">
+      <Table />
+    </div>
   </div>
 </template>
 
 <script>
+import QuickAddTransaction from '@/components/QuickAddTransaction.vue';
 import Table from '@/components/Table.vue';
 
 export default {
   components: {
     Table,
+    QuickAddTransaction,
   },
 };
 </script>
 
 <style scoped>
 .account {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh; /* 전체 화면 높이 */
+  padding: 20px;
 }
 
-h1 {
-  font-size: 24px;
-  margin-bottom: 20px;
-  text-align: center;
+/* 표 헤더와 열 이름에 대한 스타일 */
+th {
+  text-align: center; /* 열 이름 가운데 정렬 */
+}
+
+/* 표 셀에 대한 스타일 */
+td {
+  text-align: center; /* 셀 내용 가운데 정렬 */
+}
+
+.table-container {
+  overflow-x: auto; /* 가로 스크롤을 생성하고, 필요할 때만 표시 */
+  max-height: 400px; /* 표의 최대 높이를 설정하세요 */
 }
 </style>
