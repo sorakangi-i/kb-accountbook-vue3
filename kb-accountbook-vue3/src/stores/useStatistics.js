@@ -224,7 +224,7 @@ export function useStatistics() {
   // 위험 계산 함수
   const calculateRisk = (goal, totalExpense) => {
     const achievement = calculateAchievement(goal, totalExpense);
-    if (achievement >= 75) {
+    if (achievement >= 80) {
       return 'High';
     } else if (achievement >= 50) {
       return 'Medium';

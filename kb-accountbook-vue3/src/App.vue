@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <header>
-      <h1>가계부</h1>
+      <h1>소비어트</h1>
       <nav>
         <router-link to="/"
           ><i class="fa-solid fa-house"></i>&nbsp; Home</router-link
@@ -21,7 +21,7 @@
       <router-view />
     </main>
     <footer>
-      <p>&copy; 2024 My Financial Dashboard</p>
+      <p>&copy; 2024 made by 오조의 마법사들</p>
     </footer>
   </div>
 </template>

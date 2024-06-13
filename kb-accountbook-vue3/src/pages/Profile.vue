@@ -1,77 +1,95 @@
 <template>
-  <div class="profile-page">
+  <div class="profile-page container">
     <h1>프로필</h1>
     <form @submit.prevent="submitProfile">
       <!-- Member Information -->
-      <div>
-        <label for="profilePicture">프로필 사진:</label>
-        <input type="file" id="profilePicture" @change="onFileChange" />
-        <img
-          v-if="profilePictureUrl"
-          :src="profilePictureUrl"
-          alt="Profile Picture"
-          class="profile-picture-preview"
-        />
+      <div class="form-row">
+        <span class="th">
+          <font-awesome-icon icon="image" class="fa_icon" />
+          <label for="profilePicture">프로필 사진</label>
+        </span>
+        <span class="td">
+          <img
+            v-if="profilePictureUrl"
+            :src="profilePictureUrl"
+            alt="Profile Picture"
+            class="profile-picture-preview"
+          />
+          <input type="file" id="profilePicture" @change="onFileChange" />
+        </span>
       </div>
 
-      <div>
-        <label for="id">아이디:</label>
-        <input type="text" id="id" v-model="member.id" />
+      <div class="form-row">
+        <span class="th">
+          <font-awesome-icon icon="heart" class="fa_icon" />
+          <label for="name">이름</label>
+        </span>
+        <span class="td">
+          <input
+            type="text"
+            id="name"
+            v-model="member.name"
+            @keypress="validateName"
+            placeholder="이름을 입력하세요"
+          />
+        </span>
       </div>
 
-      <div>
-        <label for="password">비밀번호:</label>
-        <input type="password" id="password" v-model="member.password" />
+      <div class="form-row">
+        <span class="th">
+          <font-awesome-icon icon="user" class="fa_icon" />
+          <label>성별</label>
+        </span>
+        <span class="td radio-group">
+          <input type="radio" id="male" value="male" v-model="member.gender" />
+          <label for="male">남성</label>
+          <br />
+          <input
+            type="radio"
+            id="female"
+            value="female"
+            v-model="member.gender"
+          />
+          <label for="female">여성</label>
+        </span>
       </div>
 
-      <div>
-        <label for="name">이름:</label>
-        <input
-          type="text"
-          id="name"
-          v-model="member.name"
-          @keypress="validateName"
-        />
+      <div class="form-row">
+        <span class="th">
+          <font-awesome-icon icon="cake-candles" class="fa_icon" />
+          <label>생년월일</label>
+        </span>
+        <span class="td">
+          <select v-model="birthYear" class="birth-select">
+            <option value="" disabled selected>년</option>
+            <option v-for="year in years" :key="year" :value="year">
+              {{ year }}
+            </option>
+          </select>
+          년
+          <select v-model="birthMonth" class="birth-select">
+            <option value="" disabled selected>월</option>
+            <option v-for="month in months" :key="month" :value="month">
+              {{ month }}
+            </option>
+          </select>
+          월
+          <select v-model="birthDay" class="birth-select">
+            <option value="" disabled selected>일</option>
+            <option v-for="day in days" :key="day" :value="day">
+              {{ day }}
+            </option>
+          </select>
+          일
+        </span>
       </div>
 
-      <div>
-        <label>성별:</label>
-        <input type="radio" id="male" value="male" v-model="member.gender" />
-        <label for="male">남성</label>
-        <input
-          type="radio"
-          id="female"
-          value="female"
-          v-model="member.gender"
-        />
-        <label for="female">여성</label>
-        <input type="radio" id="other" value="other" v-model="member.gender" />
-        <label for="other">기타</label>
-      </div>
-
-      <div>
-        <label>생년월일:</label>
-        <select v-model="birthYear">
-          <option v-for="year in years" :key="year" :value="year">
-            {{ year }}
-          </option>
-        </select>
-        년
-        <select v-model="birthMonth">
-          <option v-for="month in months" :key="month" :value="month">
-            {{ month }}
-          </option>
-        </select>
-        월
-        <select v-model="birthDay">
-          <option v-for="day in days" :key="day" :value="day">{{ day }}</option>
-        </select>
-        일
-      </div>
-
-      <div>
-        <label for="mobile">전화번호:</label>
-        <div>
+      <div class="form-row">
+        <span class="th">
+          <font-awesome-icon icon="mobile-screen" class="fa_icon" />
+          <label for="mobile">전화번호</label>
+        </span>
+        <span class="td">
           <input
             type="tel"
             v-model="phonePart1"
@@ -92,97 +110,112 @@
             maxlength="4"
             style="width: 70px; display: inline-block"
           />
-        </div>
+        </span>
       </div>
 
-      <div>
-        <label>이메일 주소:</label>
-        <input type="text" v-model="emailId" />
-        @
-        <select v-model="emailDomain">
-          <option value="gmail.com">gmail.com</option>
-          <option value="naver.com">naver.com</option>
-          <option value="daum.net">daum.net</option>
-        </select>
-      </div>
-
-      <!-- Income Information -->
-      <div>
-        <h2>수입 정보</h2>
-        <div>
-          <label for="fortune">자산:</label>
+      <div class="form-row">
+        <span class="th">
+          <font-awesome-icon icon="envelope" class="fa_icon" />
+          <label>이메일 주소</label>
+        </span>
+        <span class="td">
           <input
             type="text"
-            id="fortune"
-            v-model="formattedFortune"
-            @input="formatFortune"
+            v-model="emailId"
+            class="email-input"
+            placeholder="이메일 입력"
           />
-          원
-        </div>
-        <div>
-          <label for="allowance">용돈:</label>
-          <input
-            type="text"
-            id="allowance"
-            v-model="formattedAllowance"
-            @input="formatAllowance"
-          />
-          원
-        </div>
-        <div>
-          <label for="refund">환급:</label>
-          <input
-            type="text"
-            id="refund"
-            v-model="formattedRefund"
-            @input="formatRefund"
-          />
-          원
-        </div>
-        <div>
-          <label for="other">기타:</label>
-          <input
-            type="text"
-            id="other"
-            v-model="formattedOther"
-            @input="formatOther"
-          />
-          원
-        </div>
+          @
+          <select v-model="emailDomain" class="email-select">
+            <option value="gmail.com">gmail.com</option>
+            <option value="naver.com">naver.com</option>
+            <option value="daum.net">daum.net</option>
+          </select>
+        </span>
       </div>
 
       <!-- Budget Information -->
       <div>
         <h2>목표 금액 설정</h2>
-        <div>
-          <label for="selectedCategory">카테고리:</label>
-          <select id="selectedCategory" v-model="selectedCategory">
-            <option
-              v-for="category in expenseCategories"
-              :key="category.id"
-              :value="category.name"
+        <div class="form-row">
+          <span class="th">
+            <font-awesome-icon icon="coins" class="fa_icon" />
+            <label for="selectedCategory">카테고리</label>
+          </span>
+          <span class="td">
+            <select
+              id="selectedCategory"
+              v-model="selectedCategory"
+              class="category-select"
             >
-              {{ category.name }}
-            </option>
-          </select>
+              <option value="" disabled selected>- 선택해주세요</option>
+              <option
+                v-for="category in expenseCategories"
+                :key="category.id"
+                :value="category.name"
+              >
+                {{ category.name }}
+              </option>
+            </select>
+            <button type="button" @click="toggleNewCategoryInput">
+              {{ showNewCategoryInput ? '추가 취소' : '추가' }}
+            </button>
+          </span>
         </div>
-        <div>
-          <label for="targetBudget">목표 설정 금액:</label>
-          <input
-            type="text"
-            id="targetBudget"
-            v-model="formattedTargetBudget"
-            @input="formatTargetBudget"
-          />
-          원
+        <div v-if="showNewCategoryInput" class="form-row">
+          <span class="th">
+            <font-awesome-icon icon="plus" class="fa_icon" />
+            <label for="newCategory">카테고리 추가</label>
+          </span>
+          <span class="td">
+            <input
+              type="text"
+              id="newCategory"
+              v-model="newCategory"
+              placeholder="새 카테고리 입력"
+            />
+            <button type="button" @click="confirmAddCategory">확인</button>
+            <button type="button" @click="cancelAddCategory">취소</button>
+          </span>
         </div>
-        <div v-if="selectedCategory && formattedTargetBudget">
-          카테고리: {{ selectedCategory }}<br />
-          목표 예산 금액: {{ formattedTargetBudget }} 원
+
+        <div v-if="selectedCategory">
+          <span class="th">
+            <font-awesome-icon icon="bullseye" class="fa_icon" />
+            <label for="targetBudget">목표 설정</label>
+          </span>
+          <span class="td">
+            <input
+              type="text"
+              id="targetBudget"
+              v-model="formattedTargetBudget"
+              @input="formatTargetBudget"
+            />
+            원
+          </span>
+        </div>
+
+        <div v-for="(budget, index) in budgets" :key="index" class="form-row">
+          <span class="th">
+            <font-awesome-icon icon="bullseye" class="fa_icon" />
+            <label>
+              <span class="color">{{ budget.category }}</span>
+              <br />
+              목표 설정
+            </label>
+          </span>
+          <span class="td">
+            <input
+              type="text"
+              v-model="budget.amount"
+              @input="formatBudgetAmount(index)"
+            />
+            원
+          </span>
         </div>
       </div>
 
-      <button type="submit">제출</button>
+      <button type="submit" class="submit">작성 완료</button>
     </form>
   </div>
 </template>
@@ -192,26 +225,12 @@ export default {
   data() {
     return {
       member: {
-        id: '',
-        password: '',
         name: '',
         gender: '',
         birth: '',
         mobile: '',
         email: '',
       },
-      income: {
-        fortune: 0,
-        allowance: 0,
-        refund: 0,
-        other: 0,
-      },
-      budget: {
-        targetBudget: 0,
-        periodStart: '',
-        periodEnd: '',
-      },
-      selectedCategory: '',
       phonePart1: '',
       phonePart2: '',
       phonePart3: '',
@@ -227,12 +246,6 @@ export default {
       ), // 최근 100년
       months: Array.from({ length: 12 }, (v, k) => k + 1),
       days: Array.from({ length: 31 }, (v, k) => k + 1),
-      incomeCategories: [
-        { id: '1', name: '월급' },
-        { id: '2', name: '용돈' },
-        { id: '3', name: '환급' },
-        { id: '4', name: '기타' },
-      ],
       expenseCategories: [
         { id: '1', name: '온라인쇼핑' },
         { id: '2', name: '패션/쇼핑' },
@@ -249,86 +262,53 @@ export default {
         { id: '13', name: '생활/마트' },
         { id: '14', name: '기타' },
       ],
+      budgets: [],
+      selectedCategory: '',
+      targetBudget: 0,
+      showNewCategoryInput: false,
+      newCategory: '',
     };
   },
   computed: {
-    categories() {
-      return this.expenseCategories;
-    },
-    formattedFortune: {
-      get() {
-        return this.formatNumber(this.income.fortune);
-      },
-      set(value) {
-        this.income.fortune = this.parseNumber(value);
-      },
-    },
-    formattedAllowance: {
-      get() {
-        return this.formatNumber(this.income.allowance);
-      },
-      set(value) {
-        this.income.allowance = this.parseNumber(value);
-      },
-    },
-    formattedRefund: {
-      get() {
-        return this.formatNumber(this.income.refund);
-      },
-      set(value) {
-        this.income.refund = this.parseNumber(value);
-      },
-    },
-    formattedOther: {
-      get() {
-        return this.formatNumber(this.income.other);
-      },
-      set(value) {
-        this.income.other = this.parseNumber(value);
-      },
-    },
     formattedTargetBudget: {
       get() {
-        return this.formatNumber(this.budget.targetBudget);
+        return this.formatNumber(this.targetBudget);
       },
       set(value) {
-        this.budget.targetBudget = this.parseNumber(value);
+        this.targetBudget = this.parseNumber(value);
       },
-    },
-    budgetPeriodDays() {
-      if (this.budget.periodStart && this.budget.periodEnd) {
-        const startDate = new Date(this.budget.periodStart);
-        const endDate = new Date(this.budget.periodEnd);
-        const diffTime = Math.abs(endDate - startDate);
-        return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      }
-      return 0;
     },
   },
   watch: {
-    birthYear(newYear) {
+    birthYear() {
       this.updateBirth();
     },
-    birthMonth(newMonth) {
+    birthMonth() {
       this.updateBirth();
     },
-    birthDay(newDay) {
+    birthDay() {
       this.updateBirth();
     },
-    emailId(newEmailId) {
+    emailId() {
       this.updateEmail();
     },
-    emailDomain(newEmailDomain) {
+    emailDomain() {
       this.updateEmail();
     },
-    phonePart1(newPart) {
+    phonePart1() {
       this.updateMobile();
     },
-    phonePart2(newPart) {
+    phonePart2() {
       this.updateMobile();
     },
-    phonePart3(newPart) {
+    phonePart3() {
       this.updateMobile();
+    },
+    selectedCategory(newCategory) {
+      if (newCategory) {
+        this.budgets.push({ category: newCategory, amount: 0 });
+        this.selectedCategory = '';
+      }
     },
   },
   methods: {
@@ -364,25 +344,15 @@ export default {
     parseNumber(value) {
       return parseInt(value.replace(/,/g, '')) || 0;
     },
-    formatFortune(event) {
-      this.income.fortune = this.parseNumber(event.target.value);
-      event.target.value = this.formatNumber(this.income.fortune);
-    },
-    formatAllowance(event) {
-      this.income.allowance = this.parseNumber(event.target.value);
-      event.target.value = this.formatNumber(this.income.allowance);
-    },
-    formatRefund(event) {
-      this.income.refund = this.parseNumber(event.target.value);
-      event.target.value = this.formatNumber(this.income.refund);
-    },
-    formatOther(event) {
-      this.income.other = this.parseNumber(event.target.value);
-      event.target.value = this.formatNumber(this.income.other);
-    },
     formatTargetBudget(event) {
-      this.budget.targetBudget = this.parseNumber(event.target.value);
-      event.target.value = this.formatNumber(this.budget.targetBudget);
+      this.targetBudget = this.parseNumber(event.target.value);
+      event.target.value = this.formatNumber(this.targetBudget);
+    },
+    formatBudgetAmount(index) {
+      this.budgets[index].amount = this.parseNumber(this.budgets[index].amount);
+      this.budgets[index].amount = this.formatNumber(
+        this.budgets[index].amount
+      );
     },
     onFileChange(event) {
       const file = event.target.files[0];
@@ -390,19 +360,23 @@ export default {
         this.profilePictureUrl = URL.createObjectURL(file);
       }
     },
-    updateBudgetPeriod() {
-      if (this.budget.periodStart && this.budget.periodEnd) {
-        const startDate = new Date(this.budget.periodStart);
-        const endDate = new Date(this.budget.periodEnd);
-        const diffTime = Math.abs(endDate - startDate);
-        this.budgetPeriodDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      }
+    toggleNewCategoryInput() {
+      this.showNewCategoryInput = !this.showNewCategoryInput;
+    },
+    confirmAddCategory() {
+      const newId = (this.expenseCategories.length + 1).toString();
+      this.expenseCategories.push({ id: newId, name: this.newCategory });
+      this.newCategory = '';
+      this.showNewCategoryInput = false;
+    },
+    cancelAddCategory() {
+      this.newCategory = '';
+      this.showNewCategoryInput = false;
     },
     submitProfile() {
       alert('제출 완료');
       console.log('Profile submitted', this.member);
-      console.log('Income submitted', this.income);
-      console.log('Budget submitted', this.budget);
+      console.log('Budgets submitted', this.budgets);
     },
   },
 };
@@ -412,56 +386,153 @@ export default {
 .profile-page {
   max-width: 600px;
   margin: 0 auto;
+  margin-bottom: 2rem;
   padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 10px;
+  border: 1px solid #eee;
+  border-radius: 6px;
 }
 
 .profile-page h1,
 .profile-page h2 {
-  text-align: center;
-}
-
-.profile-page form {
-  display: flex;
-  flex-direction: column;
-}
-
-.profile-page form div {
+  margin-top: 30px;
   margin-bottom: 15px;
+  text-align: center;
+  letter-spacing: -1.5px;
+  font-size: 1.7rem;
+  font-weight: 600;
 }
 
 .profile-page form label {
+  font-weight: 600;
+  color: #353535;
+  letter-spacing: -0.8px;
   margin-bottom: 5px;
 }
 
-.profile-page form input,
-.profile-page form select,
-.profile-page form textarea {
-  padding: 10px;
-  font-size: 16px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
+.profile-page form .form-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
 }
 
-.profile-page form button {
-  padding: 10px;
-  font-size: 16px;
-  border-radius: 5px;
-  border: none;
-  background-color: #007bff;
-  color: white;
-  cursor: pointer;
+.profile-page form .th {
+  flex-basis: 30%;
+  display: flex;
+  align-items: center;
+  text-align: left;
 }
 
-.profile-page form button:hover {
-  background-color: #0056b3;
+.profile-page form .th label .color {
+  color: #793ff3;
+}
+
+.profile-page form .td {
+  flex-basis: 70%;
+  display: flex;
+  align-items: center;
+}
+
+.fa_icon {
+  margin-right: 8px;
 }
 
 .profile-picture-preview {
   display: block;
   margin-top: 10px;
-  max-width: 120px;
-  max-height: 120px;
+  max-height: 150px;
+  border-radius: 10px;
+  border: 1px solid #eee;
+}
+
+.profile-page form input,
+.profile-page form select,
+.profile-page form textarea {
+  flex-basis: content;
+  width: 100%;
+  margin: 10px 0;
+  padding: 8px 10px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid #eee;
+  background-color: #fcfcfc;
+  cursor: pointer;
+}
+
+.profile-page form input[type='radio'] {
+  display: none;
+}
+
+.profile-page form .radio-group label {
+  display: inline-block;
+  margin-right: 15px;
+  cursor: pointer;
+}
+.profile-page form .radio-group label:hover {
+  color: #793ff3;
+}
+
+.profile-page form .radio-group input[type='radio'] + label::before {
+  content: '';
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 1px solid #793ff3;
+  border-radius: 50%;
+  margin-right: 5px;
+  vertical-align: middle;
+}
+
+.profile-page form .radio-group input[type='radio']:checked + label {
+  color: #793ff3;
+}
+.profile-page form .radio-group input[type='radio']:checked + label::before {
+  background-color: #793ff3;
+  border-color: #793ff3;
+}
+
+.profile-page form select {
+  width: auto;
+}
+
+.profile-page form .birth-select {
+  width: auto;
+}
+.profile-page form .email-input {
+  flex-basis: content;
+}
+.profile-page form .email-select {
+  width: auto;
+}
+
+.profile-page form .category-select {
+  width: 100%;
+}
+
+.profile-page form button {
+  margin-left: 5px;
+  min-width: 80px;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: 500;
+  border-radius: 6px;
+  border: none;
+  background-color: #793ff3;
+  color: white;
+  cursor: pointer;
+}
+
+.profile-page form button:hover {
+  background-color: #571bda;
+}
+.profile-page form .submit {
+  margin-top: 25px;
+  margin-bottom: 10px;
+  min-width: 200px;
+  font-size: 18px;
+}
+
+.footer {
+  margin-top: 40px;
+  text-align: center;
 }
 </style>
