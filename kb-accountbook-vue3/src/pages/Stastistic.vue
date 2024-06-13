@@ -99,7 +99,7 @@
                 {{ formatAmount(value.amount) }}원
               </div>
               <div class="table-cell">
-                <button @click="selectCategory(key)">소비 확인</button>
+                <button @click="selectCategory(key)">자세히</button>
               </div>
             </div>
           </div>
@@ -128,7 +128,6 @@
 </template>
 
 <script>
-
 import { useStatistics } from '../stores/useStatistics';
 import PieChart from '../components/PieChart.vue';
 import CircularProgressBar from '../components/CircularProgressBar.vue';
@@ -228,7 +227,6 @@ export default {
 </script>
 
 <style scoped>
-
 .statistics-page {
   max-width: 900px;
   margin: 0 auto;

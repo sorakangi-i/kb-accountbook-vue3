@@ -367,29 +367,63 @@ export default {
     },
     async submitProfile() {
       try {
-        const memberResponse = await axios.put('YOUR_API_ENDPOINT/member/1', {
-          name: this.member.name,
-          gender: this.member.gender,
-          birth: `${this.birthYear}년 ${String(this.birthMonth).padStart(
-            2,
-            '0'
-          )}월 ${String(this.birthDay).padStart(2, '0')}일`,
-          mobile: this.member.mobile,
-          email: this.member.email,
-        });
-
-        const budgetsToSave = this.budgets.map((budget) => ({
-          categoryAllowance: `${this.formatNumber(budget.amount)}원`,
-          category: budget.category,
-          id: Math.random().toString(36).substring(2, 10), // 임의의 ID 생성
-        }));
-
-        const budgetsResponse = await axios.put(
-          'YOUR_API_ENDPOINT/saving',
-          budgetsToSave
+        const memberResponse = await axios.put(
+          'https://flicker-ripple-twilight.glitch.me/member/1',
+          {
+            name: this.member.name,
+            gender: this.member.gender,
+            birth: `${this.birthYear}년 ${String(this.birthMonth).padStart(
+              2,
+              '0'
+            )}월 ${String(this.birthDay).padStart(2, '0')}일`,
+            mobile: this.member.mobile,
+            email: this.member.email,
+          }
         );
 
-        if (memberResponse.status === 200 && budgetsResponse.status === 200) {
+        const existingSavingsResponse = await axios.get(
+          'https://flicker-ripple-twilight.glitch.me/saving'
+        );
+        const existingSavings = existingSavingsResponse.data;
+
+        const budgetsToSave = this.budgets.map((budget) => {
+          const existingSaving = existingSavings.find(
+            (s) => s.category === budget.category
+          );
+          return {
+            categoryAllowance: `${this.formatNumber(budget.amount)}원`,
+            category: budget.category,
+            id: existingSaving
+              ? existingSaving.id
+              : Math.random().toString(36).substring(2, 10),
+          };
+        });
+
+        const budgetsResponse = await Promise.all(
+          budgetsToSave.map((budget) => {
+            const existingSaving = existingSavings.find(
+              (s) => s.category === budget.category
+            );
+            if (existingSaving) {
+              return axios.put(
+                `https://flicker-ripple-twilight.glitch.me/saving/${existingSaving.id}`,
+                budget
+              );
+            } else {
+              return axios.post(
+                'https://flicker-ripple-twilight.glitch.me/saving',
+                budget
+              );
+            }
+          })
+        );
+
+        if (
+          memberResponse.status === 200 &&
+          budgetsResponse.every(
+            (res) => res.status === 200 || res.status === 201
+          )
+        ) {
           alert('제출 완료');
           console.log('Profile submitted', this.member);
           console.log('Budgets submitted', budgetsToSave);
