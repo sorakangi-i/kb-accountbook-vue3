@@ -41,13 +41,13 @@
           <label>성별</label>
         </span>
         <span class="td radio-group">
-          <input type="radio" id="male" value="male" v-model="member.gender" />
+          <input type="radio" id="male" value="남성" v-model="member.gender" />
           <label for="male">남성</label>
           <br />
           <input
             type="radio"
             id="female"
-            value="female"
+            value="여성"
             v-model="member.gender"
           />
           <label for="female">여성</label>
@@ -150,7 +150,7 @@
             >
               <option value="" disabled selected>- 선택해주세요</option>
               <option
-                v-for="category in expenseCategories"
+                v-for="category in availableCategories"
                 :key="category.id"
                 :value="category.name"
               >
@@ -175,35 +175,22 @@
               placeholder="새 카테고리 입력"
             />
             <button type="button" @click="confirmAddCategory">확인</button>
-            <button type="button" @click="cancelAddCategory">취소</button>
-          </span>
-        </div>
-
-        <div v-if="selectedCategory">
-          <span class="th">
-            <font-awesome-icon icon="bullseye" class="fa_icon" />
-            <label for="targetBudget">목표 설정</label>
-          </span>
-          <span class="td">
-            <input
-              type="text"
-              id="targetBudget"
-              v-model="formattedTargetBudget"
-              @input="formatTargetBudget"
-            />
-            원
+            <button type="button" @click="cancelAddCategory" class="cancel">
+              취소
+            </button>
           </span>
         </div>
 
         <div v-for="(budget, index) in budgets" :key="index" class="form-row">
           <span class="th">
-            <font-awesome-icon icon="bullseye" class="fa_icon" />
             <label>
+              <font-awesome-icon icon="bullseye" class="fa_icon" />
               <span class="color">{{ budget.category }}</span>
               <br />
               목표 설정
             </label>
           </span>
+
           <span class="td">
             <input
               type="text"
@@ -211,6 +198,7 @@
               @input="formatBudgetAmount(index)"
             />
             원
+            <button type="button" @click="removeBudget(index)">삭제</button>
           </span>
         </div>
       </div>
@@ -221,24 +209,26 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   data() {
     return {
       member: {
-        name: '',
-        gender: '',
-        birth: '',
-        mobile: '',
-        email: '',
+        name: '김재이',
+        gender: '여성',
+        birth: '1998-04-17',
+        mobile: '010-2709-7767',
+        email: 'ksy980417@gmail.com',
       },
-      phonePart1: '',
-      phonePart2: '',
-      phonePart3: '',
-      emailId: '',
+      phonePart1: '010',
+      phonePart2: '2709',
+      phonePart3: '7767',
+      emailId: 'ksy980417',
       emailDomain: 'gmail.com',
-      birthYear: '',
-      birthMonth: '',
-      birthDay: '',
+      birthYear: 1998,
+      birthMonth: 4,
+      birthDay: 17,
       profilePictureUrl: null,
       years: Array.from(
         { length: 101 },
@@ -262,7 +252,10 @@ export default {
         { id: '13', name: '생활/마트' },
         { id: '14', name: '기타' },
       ],
-      budgets: [],
+      budgets: [
+        { category: '용돈', amount: 10000 },
+        { category: '온라인쇼핑', amount: 50000 },
+      ],
       selectedCategory: '',
       targetBudget: 0,
       showNewCategoryInput: false,
@@ -270,13 +263,11 @@ export default {
     };
   },
   computed: {
-    formattedTargetBudget: {
-      get() {
-        return this.formatNumber(this.targetBudget);
-      },
-      set(value) {
-        this.targetBudget = this.parseNumber(value);
-      },
+    availableCategories() {
+      const selectedCategories = this.budgets.map((budget) => budget.category);
+      return this.expenseCategories.filter(
+        (category) => !selectedCategories.includes(category.name)
+      );
     },
   },
   watch: {
@@ -306,7 +297,9 @@ export default {
     },
     selectedCategory(newCategory) {
       if (newCategory) {
-        this.budgets.push({ category: newCategory, amount: 0 });
+        if (!this.budgets.some((budget) => budget.category === newCategory)) {
+          this.budgets.push({ category: newCategory, amount: 0 });
+        }
         this.selectedCategory = '';
       }
     },
@@ -320,9 +313,9 @@ export default {
     },
     updateBirth() {
       if (this.birthYear && this.birthMonth && this.birthDay) {
-        this.member.birth = `${this.birthYear}-${String(
+        this.member.birth = `${this.birthYear}년 ${String(
           this.birthMonth
-        ).padStart(2, '0')}-${String(this.birthDay).padStart(2, '0')}`;
+        ).padStart(2, '0')}월 ${String(this.birthDay).padStart(2, '0')}일`;
       }
     },
     updateEmail() {
@@ -343,10 +336,6 @@ export default {
     },
     parseNumber(value) {
       return parseInt(value.replace(/,/g, '')) || 0;
-    },
-    formatTargetBudget(event) {
-      this.targetBudget = this.parseNumber(event.target.value);
-      event.target.value = this.formatNumber(this.targetBudget);
     },
     formatBudgetAmount(index) {
       this.budgets[index].amount = this.parseNumber(this.budgets[index].amount);
@@ -373,10 +362,44 @@ export default {
       this.newCategory = '';
       this.showNewCategoryInput = false;
     },
-    submitProfile() {
-      alert('제출 완료');
-      console.log('Profile submitted', this.member);
-      console.log('Budgets submitted', this.budgets);
+    removeBudget(index) {
+      this.budgets.splice(index, 1);
+    },
+    async submitProfile() {
+      try {
+        const memberResponse = await axios.put('YOUR_API_ENDPOINT/member/1', {
+          name: this.member.name,
+          gender: this.member.gender,
+          birth: `${this.birthYear}년 ${String(this.birthMonth).padStart(
+            2,
+            '0'
+          )}월 ${String(this.birthDay).padStart(2, '0')}일`,
+          mobile: this.member.mobile,
+          email: this.member.email,
+        });
+
+        const budgetsToSave = this.budgets.map((budget) => ({
+          categoryAllowance: `${this.formatNumber(budget.amount)}원`,
+          category: budget.category,
+          id: Math.random().toString(36).substring(2, 10), // 임의의 ID 생성
+        }));
+
+        const budgetsResponse = await axios.put(
+          'YOUR_API_ENDPOINT/saving',
+          budgetsToSave
+        );
+
+        if (memberResponse.status === 200 && budgetsResponse.status === 200) {
+          alert('제출 완료');
+          console.log('Profile submitted', this.member);
+          console.log('Budgets submitted', budgetsToSave);
+        } else {
+          alert('제출 실패');
+        }
+      } catch (error) {
+        alert('제출 중 오류 발생');
+        console.error('Error submitting profile:', error);
+      }
     },
   },
 };
@@ -386,7 +409,7 @@ export default {
 .profile-page {
   max-width: 600px;
   margin: 0 auto;
-  margin-bottom: 2rem;
+  margin-bottom: 3.5rem;
   padding: 20px;
   border: 1px solid #eee;
   border-radius: 6px;
@@ -394,7 +417,7 @@ export default {
 
 .profile-page h1,
 .profile-page h2 {
-  margin-top: 30px;
+  margin-top: 35px;
   margin-bottom: 15px;
   text-align: center;
   letter-spacing: -1.5px;
@@ -474,9 +497,10 @@ export default {
 .profile-page form .radio-group input[type='radio'] + label::before {
   content: '';
   display: inline-block;
-  width: 18px;
-  height: 18px;
-  border: 1px solid #793ff3;
+  width: 25px;
+  height: 25px;
+  border: 2px solid #a7a7a7;
+  background-color: #fcfcfc;
   border-radius: 50%;
   margin-right: 5px;
   vertical-align: middle;
@@ -486,8 +510,9 @@ export default {
   color: #793ff3;
 }
 .profile-page form .radio-group input[type='radio']:checked + label::before {
-  background-color: #793ff3;
-  border-color: #793ff3;
+  transition: border 0.3s ease-in-out;
+  background-color: #ffffff;
+  border: 7px solid #793ff3;
 }
 
 .profile-page form select {
@@ -516,23 +541,28 @@ export default {
   font-weight: 500;
   border-radius: 6px;
   border: none;
-  background-color: #793ff3;
+  background-color: #7840f2;
   color: white;
   cursor: pointer;
 }
 
 .profile-page form button:hover {
   background-color: #571bda;
+  transition: 0.3s ease-in-out;
 }
+
 .profile-page form .submit {
   margin-top: 25px;
   margin-bottom: 10px;
   min-width: 200px;
   font-size: 18px;
 }
-
-.footer {
-  margin-top: 40px;
-  text-align: center;
+.profile-page form .cancel {
+  color: #353535;
+  background-color: #e5dbff;
+}
+.profile-page form .cancel:hover {
+  color: #353535;
+  background-color: #c9b7f7;
 }
 </style>

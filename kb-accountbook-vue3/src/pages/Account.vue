@@ -39,6 +39,5 @@ td {
 
 .table-container {
   overflow-x: auto; /* 가로 스크롤을 생성하고, 필요할 때만 표시 */
-  max-height: 400px; /* 표의 최대 높이를 설정하세요 */
 }
 </style>

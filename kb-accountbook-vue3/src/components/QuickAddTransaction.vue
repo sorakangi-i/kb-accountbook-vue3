@@ -6,7 +6,7 @@
       <div class="form-group">
         <div class="icon-label-container">
           <font-awesome-icon :icon="['fas', 'money-check-dollar']" />
-          <label for="type">&nbsp; 분류</label>
+          <label for="type">&nbsp;분류</label>
         </div>
         <!-- 사용자가 선택하면 저장되는 드롭다운 목록 required: 필수 제출 -->
         <select v-model="type" id="type" required>
@@ -100,7 +100,7 @@
         <div class="icon-label-container">
           <font-awesome-icon :icon="['fas', 'arrows-spin']" />
 
-          <label for="duration">주기</label>
+          <label for="duration">&nbsp;주기</label>
         </div>
         <select v-model="duration" id="duration" required class="custom-select">
           <option disabled selected value>-- 선택해주세요 --</option>
@@ -238,6 +238,7 @@ const submitTransaction = async () => {
   width: 85%;
   border: 1px solid lightgray;
   border-radius: 60px;
+  box-shadow: 0 7px 20px rgba(0, 0, 0, 0.1);
 }
 
 .h3 {
