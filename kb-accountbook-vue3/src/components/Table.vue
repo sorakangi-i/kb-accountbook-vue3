@@ -1,9 +1,38 @@
 <template>
-  <div class="table-container">
+ <div class="table-container">
     <div class="filters" style="width: 80%">
-      <!-- 필터 코드 생략 -->
+      <!-- 날짜 필터 -->
+      <label class="filter-label" for="date-filter"><font-awesome-icon icon="calendar-alt" /> 날짜:</label>
+      <input type="date" id="date-filter" v-model="filters.date" @change="applyFilters" />
 
+      <!-- 분류 필터 -->
+      <label class="filter-label" for="type-filter"><font-awesome-icon icon="tags" /> 분류:</label>
+      <select id="type-filter" v-model="filters.type" @change="applyFilters">
+        <option value="">전체</option>
+        <option value="지출">지출</option>
+        <option value="수입">수입</option>
+      </select>
+
+      <!-- 카테고리 필터 -->
+      <label class="filter-label" for="category-filter"><font-awesome-icon icon="list" /> 카테고리:</label>
+      <select id="category-filter" v-model="filters.category" @change="applyFilters">
+        <option value="">전체</option>
+        <optgroup label="지출">
+          <option v-for="category in expenseCategories" :key="category.id" :value="category.name">{{ category.name }}</option>
+        </optgroup>
+        <optgroup label="수입">
+          <option v-for="category in incomeCategories" :key="category.id" :value="category.name">{{ category.name }}</option>
+        </optgroup>
+      </select>
+
+      <!-- 결제 수단 필터 -->
+      <label class="filter-label" for="payment-method-filter"><font-awesome-icon icon="credit-card" /> 결제 수단:</label>
+      <select id="payment-method-filter" v-model="filters.paymentMethod" @change="applyFilters">
+        <option value="">전체</option>
+        <option v-for="method in paymentMethods" :key="method.id" :value="method.name">{{ method.name }}</option>
+      </select>
     </div>
+
 
     <br></br>
     
