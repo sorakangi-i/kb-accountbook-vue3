@@ -275,11 +275,11 @@ export function useStatistics() {
   const calculateRisk = (goal, totalExpense) => {
     const achievement = calculateAchievement(goal, totalExpense);
     if (achievement >= 80) {
-      return '높음';
+      return '비만';
     } else if (achievement >= 50) {
-      return '중간';
+      return '적정';
     } else {
-      return '낮음';
+      return '건강';
     }
   };
 
