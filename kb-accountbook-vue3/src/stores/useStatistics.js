@@ -43,15 +43,15 @@ export function useStatistics() {
         typesRes,
         budgetRes,
       ] = await Promise.all([
-        axios.get('https://flicker-ripple-twilight.glitch.me/member'),
-        axios.get('https://flicker-ripple-twilight.glitch.me/saving'),
-        axios.get('https://flicker-ripple-twilight.glitch.me/incomeCategories'),
+        axios.get('http://localhost:3000/member'),
+        axios.get('http://localhost:3000/saving'),
+        axios.get('http://localhost:3000/incomeCategories'),
         axios.get(
-          'https://flicker-ripple-twilight.glitch.me/expenseCategories'
+          'http://localhost:3000/expenseCategories'
         ),
-        axios.get('https://flicker-ripple-twilight.glitch.me/paymentMethods'),
-        axios.get('https://flicker-ripple-twilight.glitch.me/types'),
-        axios.get('https://flicker-ripple-twilight.glitch.me/budget'),
+        axios.get('http://localhost:3000/paymentMethods'),
+        axios.get('http://localhost:3000/types'),
+        axios.get('http://localhost:3000/budget'),
       ]);
 
       data.value = {

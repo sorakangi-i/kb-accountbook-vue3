@@ -246,7 +246,7 @@ export default {
     async submitProfile() {
       try {
         const memberResponse = await axios.put(
-          'https://flicker-ripple-twilight.glitch.me/member/1',
+          'http://localhost:3000/member/1',
           {
             name: this.member.name,
             gender: this.member.gender,
@@ -260,7 +260,7 @@ export default {
         );
 
         const existingSavingsResponse = await axios.get(
-          'https://flicker-ripple-twilight.glitch.me/saving'
+          'http://localhost:3000/saving'
         );
         const existingSavings = existingSavingsResponse.data;
 
@@ -284,12 +284,12 @@ export default {
             );
             if (existingSaving) {
               return axios.put(
-                `https://flicker-ripple-twilight.glitch.me/saving/${existingSaving.id}`,
+                `http://localhost:3000/saving/${existingSaving.id}`,
                 budget
               );
             } else {
               return axios.post(
-                'https://flicker-ripple-twilight.glitch.me/saving',
+                'http://localhost:3000/saving',
                 budget
               );
             }
