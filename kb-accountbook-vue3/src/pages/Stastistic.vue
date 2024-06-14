@@ -1,5 +1,6 @@
 <template>
   <div class="statistics-page">
+    <!-- 수입과 지출 통계를 전환하는 버튼들 -->
     <div class="toggle-buttons">
       <button @click="toggleView('income')">
         <i class="fa-solid fa-coins"></i> &nbsp; 수입 통계
@@ -8,6 +9,8 @@
         <i class="fa-solid fa-wallet"></i> &nbsp; 지출 통계
       </button>
     </div>
+
+    <!-- 수입 통계 섹션 -->
     <div v-if="showIncome">
       <h2 class="details-container">
         <i class="fa-solid fa-coins"></i> &nbsp; 수입
@@ -20,6 +23,7 @@
       <div class="details-container">
         <div class="details-table-wrapper">
           <div class="details-table">
+            <!-- 수입 세부 사항 -->
             <div
               class="table-row"
               v-for="(value, key, index) in sortedIncomeDetails"
@@ -39,6 +43,7 @@
               </div>
             </div>
           </div>
+          <!-- 카테고리 상세 보기 -->
           <div v-if="showCategoryDetail" class="category-detail">
             <CircularProgressBar
               :percentage="
@@ -56,6 +61,8 @@
         </div>
       </div>
     </div>
+
+    <!-- 지출 통계 섹션 -->
     <div v-if="showExpense">
       <h2 class="details-container">
         <i class="fa-solid fa-wallet"></i> &nbsp; 지출
@@ -81,6 +88,7 @@
         <br />
         <div class="details-table-wrapper">
           <div class="details-table">
+            <!-- 지출 세부 사항 -->
             <div
               class="table-row"
               v-for="(value, key, index) in sortedExpenseDetails"
@@ -103,6 +111,7 @@
               </div>
             </div>
           </div>
+          <!-- 카테고리 상세 보기 -->
           <div v-if="showCategoryDetail" class="category-detail">
             <CircularProgressBar
               :percentage="
@@ -120,7 +129,11 @@
         </div>
       </div>
     </div>
+
+    <!-- 로딩 중 표시 -->
     <p v-if="!incomeChartData && !expenseChartData">Loading...</p>
+
+    <!-- 푸터 -->
     <div class="footer">
       <p>&copy; 2024 My Financial Dashboard</p>
     </div>
@@ -168,6 +181,7 @@ export default {
       showCategoryDetail, // 상세보기 상태 추가
     } = useStatistics();
 
+    // 카테고리 아이콘 맵
     const categoryIconMap = {
       월급: 'fa-solid fa-dollar-sign',
       용돈: 'fa-solid fa-sack-dollar',
@@ -189,6 +203,7 @@ export default {
       기타: 'fa-solid fa-ellipsis',
     };
 
+    // 카테고리 아이콘을 반환하는 함수
     const getCategoryIcon = (category) => {
       return categoryIconMap[category] || 'fa-solid fa-question';
     };
@@ -233,6 +248,7 @@ export default {
   padding: 20px;
 }
 
+/* 수입과 지출 통계를 전환하는 버튼들 */
 .toggle-buttons {
   display: flex;
   justify-content: center;
@@ -240,11 +256,13 @@ export default {
   margin-bottom: 20px;
 }
 
+/* 차트의 크기 조절 */
 canvas {
   width: 100%;
   height: 400px;
 }
 
+/* 세부 사항 컨테이너 */
 .details-container {
   margin-top: 40px;
   text-align: center;
@@ -255,11 +273,13 @@ canvas {
   justify-content: center;
 }
 
+/* 세부 사항 테이블 */
 .details-table {
   width: 70%;
   border-collapse: collapse;
 }
 
+/* 카테고리 상세 보기 */
 .category-detail {
   width: 30%;
   display: flex;
@@ -294,6 +314,7 @@ canvas {
   color: #ff5722;
 }
 
+/* 푸터 스타일 */
 .footer {
   margin-top: 40px;
   text-align: center;
@@ -310,6 +331,7 @@ canvas {
   left: 0;
 }
 
+/* 버튼 스타일 */
 button {
   margin: 10px;
   padding: 8px 20px;
@@ -323,6 +345,7 @@ button:hover {
   background-color: #2c3e50;
 }
 
+/* 차트 및 목표 달성 섹션 스타일 */
 .chart-and-target {
   display: flex;
   align-items: center;

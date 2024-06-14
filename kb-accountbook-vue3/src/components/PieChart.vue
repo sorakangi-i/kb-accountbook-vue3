@@ -20,7 +20,7 @@ export default {
   },
   setup(props) {
     const { canvas } = usePieChart(props); // PieChart 훅 사용하여 캔버스 요소 가져오기
-    return { canvas }; // 캔버스 요소 반환
+    return { canvas }; // 캔버스 요소 반환 얍얍 ㅑ1
   },
 };
 </script>
