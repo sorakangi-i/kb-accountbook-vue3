@@ -2,7 +2,7 @@
   <div class="statistics-page">
     <div class="toggle-buttons">
       <button @click="toggleView('income')">
-        <i class="fa-solid fa-coins"></i> &nbsp; 소비 통계
+        <i class="fa-solid fa-coins"></i> &nbsp; 수입 통계
       </button>
       <button @click="toggleView('expense')">
         <i class="fa-solid fa-wallet"></i> &nbsp; 지출 통계
@@ -10,7 +10,7 @@
     </div>
     <div v-if="showIncome">
       <h2 class="details-container">
-        <i class="fa-solid fa-coins"></i> &nbsp; 소비
+        <i class="fa-solid fa-coins"></i> &nbsp; 수입
       </h2>
       <br />
       <div class="chart-container">
