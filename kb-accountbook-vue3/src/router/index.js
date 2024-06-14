@@ -2,8 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import Home from '../pages/Home.vue';
 import Account from '../pages/Account.vue';
 import Statistic from '../pages/Stastistic.vue';
-import Profile from '@/pages/Profile.vue';
-
+import Profile from '../pages/Profile.vue';
 const routes = [
   { path: '/', name: 'Home', component: Home },
   { path: '/statistic', name: 'Statistic', component: Statistic },
